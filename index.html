@@ -1,0 +1,1698 @@
+<!DOCTYPE html>
+<html lang="ru" data-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Мой Словарь</title>
+    <link rel="stylesheet" href="base.css">
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="text.css">
+    <link rel="stylesheet" href="goal.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+<div class="app-container">
+    <!-- Sidebar -->
+    <aside class="sidebar" id="sidebar">
+        <div class="logo">
+            <i class="fas fa-book-open"></i>
+            <span>Словарь</span>
+        </div>
+
+        <nav class="nav-menu">
+            <!-- Новый раздел Цель -->
+            <div class="nav-section">
+                <span class="nav-section-title">Цель</span>
+                <button class="nav-item" data-section="goal">
+                    <i class="fas fa-bullseye"></i>
+                    <span>Моя цель</span>
+                    <span class="nav-badge goal-badge" id="navGoalBadge" style="display:none;">
+                        <i class="fas fa-fire"></i>
+                    </span>
+                </button>
+            </div>
+
+            <div class="nav-section">
+                <span class="nav-section-title">Словарь</span>
+                <button class="nav-item active" data-section="dictionary">
+                    <i class="fas fa-list"></i>
+                    <span>Все слова</span>
+                    <span class="nav-badge" id="navTotalBadge">0</span>
+                </button>
+                <button class="nav-item" data-section="learning">
+                    <i class="fas fa-graduation-cap"></i>
+                    <span>В изучении</span>
+                    <span class="nav-badge warning" id="navLearningBadge">0</span>
+                </button>
+                <button class="nav-item" data-section="learned">
+                    <i class="fas fa-check-circle"></i>
+                    <span>Выучено</span>
+                    <span class="nav-badge success" id="navLearnedBadge">0</span>
+                </button>
+            </div>
+
+            <div class="nav-section">
+                <span class="nav-section-title">Обучение</span>
+                <button class="nav-item" data-section="practice">
+                    <i class="fas fa-brain"></i>
+                    <span>Повторение</span>
+                </button>
+                <button class="nav-item" data-section="speaks">
+                    <i class="fa-brands fa-teamspeak"></i>
+                    <span>Говорение</span>
+                </button>
+                <!-- Videos -->
+                <button class="nav-item" data-section="videos">
+                    <i class="fas fa-play-circle"></i>
+                    <span>Смотреть видео</span>
+                    <span class="nav-badge" id="navVideosBadge" style="display:none;">0</span>
+                </button>
+
+                <button class="nav-item" data-section="reading">
+                    <i class="fas fa-book-reader"></i>
+                    <span>Чтение текстов</span>
+                    <span class="nav-badge locked" id="readingLockedBadge">
+                        <i class="fas fa-lock"></i>
+                    </span>
+                </button>
+
+                <button class="nav-item" data-section="wordgame">
+                    <i class="fas fa-gamepad"></i>
+                    <span>Игра в слова</span>
+                    <span class="nav-badge locked" id="gameLockedBadge">
+                        <i class="fas fa-lock"></i>
+                    </span>
+                </button>
+            </div>
+
+            <div class="nav-section">
+                <span class="nav-section-title">Статистика</span>
+                <button class="nav-item" data-section="progress">
+                    <i class="fas fa-chart-line"></i>
+                    <span>Прогресс</span>
+                </button>
+                <button class="nav-item" data-section="goalHistory">
+                    <i class="fas fa-history"></i>
+                    <span>История целей</span>
+                </button>
+            </div>
+
+            <div class="nav-section">
+                <span class="nav-section-title">Система</span>
+                <button class="nav-item" data-section="settings">
+                    <i class="fas fa-cog"></i>
+                    <span>Настройки</span>
+                </button>
+            </div>
+        </nav>
+
+        <div class="sidebar-footer">
+            <div class="user-level">
+                <div class="level-icon">
+                    <i class="fas fa-star"></i>
+                </div>
+                <div class="level-info">
+                    <span class="level-title" id="userLevelTitle">Новичок</span>
+                    <span class="level-words" id="userLevelWords">0 слов</span>
+                </div>
+            </div>
+        </div>
+    </aside>
+
+    <!-- Mobile Header -->
+    <div class="mobile-header">
+        <button class="menu-toggle" id="menuToggle">
+            <i class="fas fa-bars"></i>
+        </button>
+        <div class="mobile-logo">
+            <i class="fas fa-book-open"></i>
+            <span>Словарь</span>
+        </div>
+    </div>
+
+    <!-- Main Content -->
+    <main class="main-content">
+        
+        <!-- Goal Section (NEW) -->
+        <section id="goal-section" class="section">
+            <div class="section-header">
+                <div class="section-title">
+                    <h1><i class="fas fa-bullseye"></i> Моя цель</h1>
+                    <p class="section-subtitle">Поставьте цель и достигните её</p>
+                </div>
+            </div>
+
+            <div class="goal-container" id="goalContainer">
+                <!-- Состояние: Цель не открыта -->
+                <div class="goal-setup" id="goalSetup">
+                    <div class="goal-setup-header">
+                        <div class="goal-setup-icon">
+                            <i class="fas fa-rocket"></i>
+                        </div>
+                        <h2>Открыть новую цель</h2>
+                        <p>Определите свой путь изучения английского языка</p>
+                    </div>
+
+                    <div class="goal-form">
+                        <!-- Точка A -->
+                        <div class="goal-point goal-point-a">
+                            <div class="goal-point-header">
+                                <span class="goal-point-marker">A</span>
+                                <h3>Точка старта</h3>
+                                <p>Откуда вы начинаете</p>
+                            </div>
+                            <div class="goal-point-body">
+                                <div class="goal-form-row">
+                                    <div class="goal-form-group">
+                                        <label><i class="fas fa-signal"></i> Текущий уровень</label>
+                                        <select id="goalCurrentLevel">
+                                            <option value="a0">A0 - Нулевой</option>
+                                            <option value="pre-a1">Pre-A1 - Начальный</option>
+                                            <option value="a1" selected>A1 - Элементарный</option>
+                                            <option value="pre-a2">Pre-A2</option>
+                                            <option value="a2">A2 - Базовый</option>
+                                            <option value="pre-b1">Pre-B1</option>
+                                            <option value="b1">B1 - Средний</option>
+                                            <option value="pre-b2">Pre-B2</option>
+                                            <option value="b2">B2 - Выше среднего</option>
+                                            <option value="pre-c1">Pre-C1</option>
+                                            <option value="c1">C1 - Продвинутый</option>
+                                            <option value="c1-pro">C1 Pro</option>
+                                            <option value="pre-c2">Pre-C2</option>
+                                            <option value="c2">C2 - Носитель</option>
+                                            <option value="c2-pro">C2 Pro</option>
+                                        </select>
+                                    </div>
+                                    <div class="goal-form-group">
+                                        <label><i class="fas fa-book"></i> Словарный запас (примерно)</label>
+                                        <input type="number" id="goalCurrentVocab" value="0" min="0" max="50000" placeholder="0">
+                                        <span class="goal-hint">Сколько слов вы уже знаете</span>
+                                    </div>
+                                </div>
+
+                                <div class="goal-skills-grid">
+                                    <label class="goal-skill-checkbox">
+                                        <input type="checkbox" id="goalCanReadA">
+                                        <span class="checkmark"></span>
+                                        <div class="skill-info">
+                                            <i class="fas fa-book-reader"></i>
+                                            <span>Умею читать</span>
+                                        </div>
+                                    </label>
+                                    <label class="goal-skill-checkbox">
+                                        <input type="checkbox" id="goalCanWriteA">
+                                        <span class="checkmark"></span>
+                                        <div class="skill-info">
+                                            <i class="fas fa-pen"></i>
+                                            <span>Умею писать</span>
+                                        </div>
+                                    </label>
+                                    <label class="goal-skill-checkbox">
+                                        <input type="checkbox" id="goalCanSpeakA">
+                                        <span class="checkmark"></span>
+                                        <div class="skill-info">
+                                            <i class="fas fa-comments"></i>
+                                            <span>Умею говорить</span>
+                                        </div>
+                                    </label>
+                                    <label class="goal-skill-checkbox">
+                                        <input type="checkbox" id="goalCanListenA">
+                                        <span class="checkmark"></span>
+                                        <div class="skill-info">
+                                            <i class="fas fa-headphones"></i>
+                                            <span>Понимаю речь</span>
+                                        </div>
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Стрелка между точками -->
+                        <div class="goal-arrow">
+                            <i class="fas fa-arrow-down"></i>
+                        </div>
+
+                        <!-- Точка B -->
+                        <div class="goal-point goal-point-b">
+                            <div class="goal-point-header">
+                                <span class="goal-point-marker">B</span>
+                                <h3>Точка назначения</h3>
+                                <p>Куда вы хотите придти</p>
+                            </div>
+                            <div class="goal-point-body">
+                                <div class="goal-form-row">
+                                    <div class="goal-form-group">
+                                        <label><i class="fas fa-trophy"></i> Целевой уровень</label>
+                                        <select id="goalTargetLevel">
+                                            <option value="pre-a1">Pre-A1 - Начальный</option>
+                                            <option value="a1">A1 - Элементарный</option>
+                                            <option value="pre-a2">Pre-A2</option>
+                                            <option value="a2">A2 - Базовый</option>
+                                            <option value="pre-b1">Pre-B1</option>
+                                            <option value="b1" selected>B1 - Средний</option>
+                                            <option value="pre-b2">Pre-B2</option>
+                                            <option value="b2">B2 - Выше среднего</option>
+                                            <option value="pre-c1">Pre-C1</option>
+                                            <option value="c1">C1 - Продвинутый</option>
+                                            <option value="c1-pro">C1 Pro</option>
+                                            <option value="pre-c2">Pre-C2</option>
+                                            <option value="c2">C2 - Носитель</option>
+                                            <option value="c2-pro">C2 Pro</option>
+                                        </select>
+                                    </div>
+                                    <div class="goal-form-group">
+                                        <label><i class="fas fa-book"></i> Целевой словарный запас</label>
+                                        <input type="number" id="goalTargetVocab" value="3000" min="100" max="50000" readonly>
+                                        <span class="goal-hint">Автоматически по уровню</span>
+                                    </div>
+                                </div>
+
+                                <h4 class="goal-skills-title"><i class="fas fa-star"></i> Целевые навыки</h4>
+                                <div class="goal-skills-grid">
+                                    <label class="goal-skill-checkbox">
+                                        <input type="checkbox" id="goalCanReadB" checked>
+                                        <span class="checkmark"></span>
+                                        <div class="skill-info">
+                                            <i class="fas fa-book-reader"></i>
+                                            <span>Чтение</span>
+                                        </div>
+                                    </label>
+                                    <label class="goal-skill-checkbox">
+                                        <input type="checkbox" id="goalCanWriteB" checked>
+                                        <span class="checkmark"></span>
+                                        <div class="skill-info">
+                                            <i class="fas fa-pen"></i>
+                                            <span>Письмо</span>
+                                        </div>
+                                    </label>
+                                    <label class="goal-skill-checkbox">
+                                        <input type="checkbox" id="goalCanSpeakB" checked>
+                                        <span class="checkmark"></span>
+                                        <div class="skill-info">
+                                            <i class="fas fa-comments"></i>
+                                            <span>Говорение</span>
+                                        </div>
+                                    </label>
+                                    <label class="goal-skill-checkbox">
+                                        <input type="checkbox" id="goalCanListenB" checked>
+                                        <span class="checkmark"></span>
+                                        <div class="skill-info">
+                                            <i class="fas fa-headphones"></i>
+                                            <span>Понимание речи</span>
+                                        </div>
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Выбор периода -->
+                        <div class="goal-period">
+                            <h3><i class="fas fa-calendar-alt"></i> За какой период?</h3>
+                            <p>Выберите срок достижения цели</p>
+                            <div class="goal-period-badges">
+                                <button type="button" class="goal-period-badge" data-days="60">
+                                    <span class="days">60</span>
+                                    <span class="label">дней</span>
+                                    <span class="months">~2 мес</span>
+                                </button>
+                                <button type="button" class="goal-period-badge active" data-days="90">
+                                    <span class="days">90</span>
+                                    <span class="label">дней</span>
+                                    <span class="months">~3 мес</span>
+                                </button>
+                                <button type="button" class="goal-period-badge" data-days="125">
+                                    <span class="days">125</span>
+                                    <span class="label">дней</span>
+                                    <span class="months">~4 мес</span>
+                                </button>
+                                <button type="button" class="goal-period-badge" data-days="180">
+                                    <span class="days">180</span>
+                                    <span class="label">дней</span>
+                                    <span class="months">~6 мес</span>
+                                </button>
+                                <button type="button" class="goal-period-badge" data-days="250">
+                                    <span class="days">250</span>
+                                    <span class="label">дней</span>
+                                    <span class="months">~8 мес</span>
+                                </button>
+                                <button type="button" class="goal-period-badge" data-days="300">
+                                    <span class="days">300</span>
+                                    <span class="label">дней</span>
+                                    <span class="months">~10 мес</span>
+                                </button>
+                                <button type="button" class="goal-period-badge" data-days="360">
+                                    <span class="days">360</span>
+                                    <span class="label">дней</span>
+                                    <span class="months">~12 мес</span>
+                                </button>
+                                <button type="button" class="goal-period-badge" data-days="400">
+                                    <span class="days">400</span>
+                                    <span class="label">дней</span>
+                                    <span class="months">~13 мес</span>
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- Кнопка открытия цели -->
+                        <button type="button" class="btn btn-primary btn-large goal-start-btn" id="startGoalBtn">
+                            <i class="fas fa-flag-checkered"></i> Открыть цель
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Состояние: Цель активна -->
+                <div class="goal-active" id="goalActive" style="display: none;">
+                    <!-- Основная карточка прогресса -->
+                    <div class="goal-progress-card">
+                        <div class="goal-progress-header">
+                            <div class="goal-title-row">
+                                <h2><i class="fas fa-bullseye"></i> Активная цель</h2>
+                                <span class="goal-dates" id="goalDates">01.01.2024 - 01.04.2024</span>
+                            </div>
+                            <div class="goal-level-transition">
+                                <span class="goal-level from" id="goalFromLevel">A1</span>
+                                <i class="fas fa-arrow-right"></i>
+                                <span class="goal-level to" id="goalToLevel">B1</span>
+                            </div>
+                        </div>
+
+                        <div class="goal-main-progress">
+                            <div class="goal-progress-info">
+                                <span class="goal-progress-text">
+                                    День <strong id="goalCurrentDay">1</strong> из <strong id="goalTotalDays">90</strong>
+                                </span>
+                                <span class="goal-progress-percent" id="goalProgressPercent">0%</span>
+                            </div>
+                            <div class="goal-progress-bar">
+                                <div class="goal-progress-fill" id="goalProgressFill" style="width: 0%"></div>
+                            </div>
+                            <div class="goal-days-left">
+                                <i class="fas fa-hourglass-half"></i>
+                                <span>Осталось <strong id="goalDaysLeft">90</strong> дней</span>
+                            </div>
+                        </div>
+
+                        <!-- Статистика целей -->
+                        <div class="goal-stats-grid">
+                            <div class="goal-stat-item">
+                                <div class="goal-stat-icon"><i class="fas fa-book"></i></div>
+                                <div class="goal-stat-info">
+                                    <span class="goal-stat-value" id="goalStatNewWords">0</span>
+                                    <span class="goal-stat-label">Новых слов</span>
+                                </div>
+                            </div>
+                            <div class="goal-stat-item">
+                                <div class="goal-stat-icon success"><i class="fas fa-check"></i></div>
+                                <div class="goal-stat-info">
+                                    <span class="goal-stat-value" id="goalStatLearnedWords">0</span>
+                                    <span class="goal-stat-label">Выучено</span>
+                                </div>
+                            </div>
+                            <div class="goal-stat-item">
+                                <div class="goal-stat-icon info"><i class="fas fa-file-alt"></i></div>
+                                <div class="goal-stat-info">
+                                    <span class="goal-stat-value" id="goalStatTexts">0</span>
+                                    <span class="goal-stat-label">Текстов</span>
+                                </div>
+                            </div>
+                            <div class="goal-stat-item">
+                                <div class="goal-stat-icon warning"><i class="fas fa-video"></i></div>
+                                <div class="goal-stat-info">
+                                    <span class="goal-stat-value" id="goalStatVideos">0</span>
+                                    <span class="goal-stat-label">Видео</span>
+                                </div>
+                            </div>
+                            <div class="goal-stat-item">
+                                <div class="goal-stat-icon accent"><i class="fas fa-microphone"></i></div>
+                                <div class="goal-stat-info">
+                                    <span class="goal-stat-value" id="goalStatSpeaking">0</span>
+                                    <span class="goal-stat-label">мин говорения</span>
+                                </div>
+                            </div>
+                            <div class="goal-stat-item">
+                                <div class="goal-stat-icon"><i class="fas fa-fire"></i></div>
+                                <div class="goal-stat-info">
+                                    <span class="goal-stat-value" id="goalStatStreak">0</span>
+                                    <span class="goal-stat-label">дней подряд</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Кнопка закрытия дня -->
+                        <button class="btn btn-success btn-large goal-close-day-btn" id="closeDayBtn">
+                            <i class="fas fa-check-circle"></i> Закрыть сегодняшний день
+                        </button>
+                    </div>
+
+                    <!-- График прогресса -->
+                    <div class="goal-chart-card">
+                        <h3><i class="fas fa-chart-area"></i> График прогресса</h3>
+                        <div class="goal-chart" id="goalChart">
+                            <canvas id="goalChartCanvas"></canvas>
+                        </div>
+                    </div>
+
+                    <!-- Календарь-расписание -->
+                    <div class="goal-schedule-card">
+                        <h3><i class="fas fa-calendar-check"></i> Расписание закрытий</h3>
+                        
+                        <div class="goal-week-nav">
+                            <button class="btn btn-secondary btn-small" id="goalPrevWeek">
+                                <i class="fas fa-chevron-left"></i>
+                            </button>
+                            <span class="goal-week-label" id="goalWeekLabel">Неделя 1</span>
+                            <button class="btn btn-secondary btn-small" id="goalNextWeek">
+                                <i class="fas fa-chevron-right"></i>
+                            </button>
+                        </div>
+
+                        <div class="goal-week-header">
+                            <span>ПН</span>
+                            <span>ВТ</span>
+                            <span>СР</span>
+                            <span>ЧТ</span>
+                            <span>ПТ</span>
+                            <span>СБ</span>
+                            <span>ВС</span>
+                        </div>
+
+                        <div class="goal-week-days" id="goalWeekDays">
+                            <!-- Динамически заполняется -->
+                        </div>
+
+                        <div class="goal-day-details" id="goalDayDetails" style="display: none;">
+                            <div class="goal-day-details-header">
+                                <h4 id="goalDayDetailsTitle">Понедельник, 1 января</h4>
+                                <button class="btn btn-secondary btn-small" id="closeDayDetails">
+                                    <i class="fas fa-times"></i>
+                                </button>
+                            </div>
+                            <div class="goal-day-details-body" id="goalDayDetailsBody">
+                                <!-- Детали дня -->
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Действия -->
+                    <div class="goal-actions">
+                        <button class="btn btn-danger" id="closeGoalBtn">
+                            <i class="fas fa-flag"></i> Завершить цель досрочно
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Goal History Section (NEW) -->
+        <section id="goalHistory-section" class="section">
+            <div class="section-header">
+                <div class="section-title">
+                    <h1><i class="fas fa-history"></i> История целей</h1>
+                    <p class="section-subtitle">Все ваши завершённые цели</p>
+                </div>
+            </div>
+
+            <div class="goal-history-container" id="goalHistoryContainer">
+                <div class="goal-history-list" id="goalHistoryList">
+                    <!-- Динамически заполняется -->
+                </div>
+
+                <div class="empty-state" id="goalHistoryEmpty">
+                    <i class="fas fa-flag-checkered"></i>
+                    <h3>История пуста</h3>
+                    <p>Здесь будут отображаться завершённые цели</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Dictionary Section -->
+        <section id="dictionary-section" class="section active">
+            <div class="section-header">
+                <div class="section-title">
+                    <h1><i class="fas fa-list"></i> Все слова</h1>
+                    <p class="section-subtitle">Ваша коллекция слов</p>
+                </div>
+                <button class="btn btn-primary" id="addWordBtn">
+                    <i class="fas fa-plus"></i> Добавить слово
+                </button>
+            </div>
+
+            <div class="search-filter-bar">
+                <div class="search-box">
+                    <i class="fas fa-search"></i>
+                    <input type="text" id="searchInput" placeholder="Поиск слов...">
+                    <button class="clear-search" id="clearSearch">
+                        <i class="fas fa-times"></i>
+                    </button>
+                </div>
+                <div class="filter-group">
+                    <select id="sortSelect">
+                        <option value="newest">Сначала новые</option>
+                        <option value="oldest">Сначала старые</option>
+                        <option value="az">A-Z</option>
+                        <option value="za">Z-A</option>
+                    </select>
+                    <select id="filterStatus">
+                        <option value="all">Все статусы</option>
+                        <option value="learning">В изучении</option>
+                        <option value="learned">Выучено</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="words-grid" id="wordsGrid"></div>
+
+            <div class="empty-state" id="emptyState">
+                <i class="fas fa-inbox"></i>
+                <h3>Словарь пуст</h3>
+                <p>Добавьте первое слово, чтобы начать</p>
+                <button class="btn btn-primary" id="emptyAddBtn">
+                    <i class="fas fa-plus"></i> Добавить слово
+                </button>
+            </div>
+        </section>
+
+        <!-- Learning Section -->
+        <section id="learning-section" class="section">
+            <div class="section-header">
+                <div class="section-title">
+                    <h1><i class="fas fa-graduation-cap"></i> В изучении</h1>
+                    <p class="section-subtitle">Слова, которые вы изучаете</p>
+                </div>
+            </div>
+            <div class="words-grid" id="learningGrid"></div>
+            <div class="empty-state" id="learningEmpty">
+                <i class="fas fa-book-reader"></i>
+                <h3>Нет слов в изучении</h3>
+                <p>Отметьте слова как "В изучении"</p>
+            </div>
+        </section>
+
+        <!-- Learned Section -->
+        <section id="learned-section" class="section">
+            <div class="section-header">
+                <div class="section-title">
+                    <h1><i class="fas fa-check-circle"></i> Выученные слова</h1>
+                    <p class="section-subtitle">Слова, которые вы уже знаете</p>
+                </div>
+            </div>
+            <div class="words-grid" id="learnedGrid"></div>
+            <div class="empty-state" id="learnedEmpty">
+                <i class="fas fa-star"></i>
+                <h3>Нет выученных слов</h3>
+                <p>Отметьте слова как "Выучено"</p>
+            </div>
+        </section>
+
+        <!-- Practice Section -->
+        <section id="practice-section" class="section">
+            <div class="section-header">
+                <div class="section-title">
+                    <h1><i class="fas fa-brain"></i> Режим повторения</h1>
+                    <p class="section-subtitle">Закрепляйте знания</p>
+                </div>
+            </div>
+
+            <div class="practice-container" id="practiceContainer">
+                <div class="practice-setup" id="practiceSetup">
+                    <div class="practice-mode-cards">
+                        <div class="mode-card active" data-mode="word">
+                            <div class="mode-icon">
+                                <i class="fas fa-font"></i>
+                            </div>
+                            <h3>Слово на картинку</h3>
+                            <p>Видите слово, вспоминаете значение</p>
+                        </div>
+                        <div class="mode-card" data-mode="image">
+                            <div class="mode-icon">
+                                <i class="fas fa-image"></i>
+                            </div>
+                            <h3>Картинка на слово</h3>
+                            <p>Видите картинку, вспоминаете слово</p>
+                        </div>
+                    </div>
+
+                    <div class="practice-options">
+                        <h3><i class="fas fa-filter"></i> Выберите слова:</h3>
+                        <div class="option-group">
+                            <label class="checkbox-label">
+                                <input type="checkbox" id="practiceLearning" checked>
+                                <span class="checkmark"></span>
+                                <span><i class="fas fa-graduation-cap"></i> В изучении</span>
+                            </label>
+                            <label class="checkbox-label">
+                                <input type="checkbox" id="practiceLearned">
+                                <span class="checkmark"></span>
+                                <span><i class="fas fa-check-circle"></i> Выученные</span>
+                            </label>
+                        </div>
+
+                        <div class="practice-count">
+                            <label>Количество слов:</label>
+                            <select id="practiceCount">
+                                <option value="5">5 слов</option>
+                                <option value="10" selected>10 слов</option>
+                                <option value="20">20 слов</option>
+                                <option value="50">50 слов</option>
+                                <option value="all">Все слова</option>
+                            </select>
+                        </div>
+
+                        <button class="btn btn-primary btn-large" id="startPractice">
+                            <i class="fas fa-play"></i> Начать повторение
+                        </button>
+                    </div>
+                </div>
+
+                <div class="practice-card-container" id="practiceCardContainer" style="display: none;">
+                    <div class="practice-header">
+                        <button class="btn btn-secondary btn-small" id="exitPractice">
+                            <i class="fas fa-arrow-left"></i> Выйти
+                        </button>
+                        <div class="practice-progress">
+                            <span id="practiceProgress">1 / 10</span>
+                        </div>
+                    </div>
+
+                    <div class="progress-bar-container">
+                        <div class="progress-bar">
+                            <div class="progress-fill" id="progressFill"></div>
+                        </div>
+                    </div>
+
+                    <div class="practice-card" id="practiceCard">
+                        <div class="card-front" id="cardFront"></div>
+                        <div class="card-back" id="cardBack" style="display: none;"></div>
+                    </div>
+
+                    <div class="practice-actions">
+                        <button class="btn btn-secondary btn-large" id="showAnswer">
+                            <i class="fas fa-eye"></i> Показать ответ
+                        </button>
+                        <div class="answer-buttons" id="answerButtons" style="display: none;">
+                            <button class="btn btn-danger btn-large" id="dontKnow">
+                                <i class="fas fa-times"></i> Не помню
+                            </button>
+                            <button class="btn btn-success btn-large" id="know">
+                                <i class="fas fa-check"></i> Помню
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="practice-results" id="practiceResults" style="display: none;">
+                    <div class="results-card">
+                        <div class="results-icon">
+                            <i class="fas fa-trophy"></i>
+                        </div>
+                        <h2>Повторение завершено!</h2>
+                        <div class="results-stats">
+                            <div class="result-item correct">
+                                <i class="fas fa-check-circle"></i>
+                                <div class="result-info">
+                                    <span class="result-number" id="correctCount">0</span>
+                                    <span class="result-label">Правильно</span>
+                                </div>
+                            </div>
+                            <div class="result-item wrong">
+                                <i class="fas fa-times-circle"></i>
+                                <div class="result-info">
+                                    <span class="result-number" id="wrongCount">0</span>
+                                    <span class="result-label">Неправильно</span>
+                                </div>
+                            </div>
+                            <div class="result-item accuracy">
+                                <i class="fas fa-percentage"></i>
+                                <div class="result-info">
+                                    <span class="result-number" id="accuracyPercent">0%</span>
+                                    <span class="result-label">Точность</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="results-actions">
+                            <button class="btn btn-secondary" id="restartPractice">
+                                <i class="fas fa-redo"></i> Повторить
+                            </button>
+                            <button class="btn btn-primary" id="backToSetup">
+                                <i class="fas fa-cog"></i> Настройки
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="empty-state" id="practiceEmpty" style="display: none;">
+                <i class="fas fa-exclamation-circle"></i>
+                <h3>Нет слов для повторения</h3>
+                <p>Добавьте слова в словарь</p>
+            </div>
+        </section>
+
+        <!-- Speaking Section -->
+        <section id="speaks-section" class="section">
+            <div class="section-header">
+                <div class="section-title">
+                    <h1><i class="fa-brands fa-teamspeak"></i> Говорение</h1>
+                    <p class="section-subtitle">Практикуйте устную речь и проверяйте с помощью ИИ</p>
+                </div>
+            </div>
+
+            <div class="speaking-container" id="speakingContainer">
+                <!-- Не поддерживается -->
+                <div class="speaking-not-supported" id="speakingNotSupported" style="display: none;">
+                    <div class="locked-card">
+                        <div class="locked-icon">
+                            <i class="fas fa-microphone-slash"></i>
+                        </div>
+                        <h2>Распознавание речи не поддерживается</h2>
+                        <p>Ваш браузер не поддерживает Web Speech API.</p>
+                        <p>Пожалуйста, используйте <strong>Google Chrome</strong> или <strong>Microsoft Edge</strong>.</p>
+                    </div>
+                </div>
+
+                <!-- Основной контент -->
+                <div class="speaking-content" id="speakingContent">
+                    <div class="speaking-card">
+                        <div class="speaking-instructions">
+                            <h3><i class="fas fa-info-circle"></i> Как это работает</h3>
+                            <ol>
+                                <li>Нажмите <strong>"Начать запись"</strong> и говорите на английском</li>
+                                <li>Ваша речь будет автоматически преобразована в текст</li>
+                                <li>Нажмите <strong>"Скопировать для ИИ"</strong></li>
+                                <li>Вставьте текст в ChatGPT, Claude или другой AI-чат</li>
+                                <li>ИИ проверит вашу речь и укажет на ошибки</li>
+                            </ol>
+                        </div>
+
+                        <div class="speaking-controls">
+                            <div class="speaking-language-select">
+                                <label for="speakingLanguage"><i class="fas fa-globe"></i> Язык:</label>
+                                <select id="speakingLanguage">
+                                    <option value="en-US">English (US)</option>
+                                    <option value="en-GB">English (UK)</option>
+                                    <option value="en-AU">English (Australia)</option>
+                                </select>
+                            </div>
+
+                            <div class="speaking-status" id="speakingStatus">
+                                <span><i class="fas fa-microphone-slash"></i> Ожидание</span>
+                            </div>
+
+                            <button class="btn btn-primary btn-large" id="speakingRecordBtn">
+                                <i class="fas fa-microphone"></i> Начать запись
+                            </button>
+                        </div>
+
+                        <div class="speaking-transcript-container">
+                            <h3><i class="fas fa-file-alt"></i> Распознанный текст</h3>
+                            <div class="speaking-transcript-area">
+                                <div class="speaking-transcript" id="speakingTranscript"></div>
+                                <div class="speaking-placeholder" id="speakingPlaceholder">
+                                    <i class="fas fa-microphone"></i>
+                                    <p>Здесь появится распознанный текст...</p>
+                                </div>
+                            </div>
+                            <div class="speaking-transcript-footer">
+                                <span class="speaking-char-count" id="speakingCharCount">0 символов</span>
+                            </div>
+                        </div>
+
+                        <div class="speaking-actions">
+                            <button class="btn btn-secondary" id="speakingClearBtn" disabled>
+                                <i class="fas fa-trash"></i> Очистить
+                            </button>
+                            <button class="btn btn-success btn-large" id="speakingCopyBtn" disabled>
+                                <i class="fas fa-copy"></i> Скопировать для ИИ
+                            </button>
+                        </div>
+
+                        <div class="speaking-tip">
+                            <i class="fas fa-lightbulb"></i>
+                            <p><strong>Совет:</strong> Говорите чётко и не торопитесь. После копирования вставьте текст в <a href="https://chat.openai.com" target="_blank">ChatGPT</a>, <a href="https://claude.ai" target="_blank">Claude</a> или любой другой AI-ассистент.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Videos Section -->
+        <section id="videos-section" class="section">
+            <div class="section-header">
+                <div class="section-title">
+                    <h1><i class="fas fa-play-circle"></i> Видео</h1>
+                    <p class="section-subtitle">Лента видео</p>
+                </div>
+            </div>
+
+            <div class="videos-container" id="videosContainer">
+                <!-- Videos Setup -->
+                <div class="videos-setup" id="videosSetup">
+                    <div class="videos-header">
+                        <div class="search-box">
+                            <i class="fas fa-search"></i>
+                            <input type="text" id="videosSearch" placeholder="Поиск по названию...">
+                            <button class="clear-search" id="clearVideosSearch">
+                                <i class="fas fa-times"></i>
+                            </button>
+                        </div>
+
+                        <div class="filter-group">
+                            <select id="videosLevelFilter">
+                                <option value="all">Все уровни</option>
+                                <option value="a0">A0</option>
+                                <option value="pre-a1">Pre-A1</option>
+                                <option value="a1">A1</option>
+                                <option value="pre-a2">Pre-A2</option>
+                                <option value="a2">A2</option>
+                                <option value="pre-b1">Pre-B1</option>
+                                <option value="b1">B1</option>
+                                <option value="pre-b2">Pre-B2</option>
+                                <option value="b2">B2</option>
+                                <option value="pre-c1">Pre-C1</option>
+                                <option value="c1">C1</option>
+                                <option value="c1-pro">C1 Pro</option>
+                                <option value="pre-c2">Pre-C2</option>
+                                <option value="c2">C2</option>
+                                <option value="c2-pro">C2 Pro</option>
+                            </select>
+
+                            <select id="videosStatusFilter">
+                                <option value="all">Все</option>
+                                <option value="new">Новые</option>
+                                <option value="watched">Просмотренные</option>
+                                <option value="favorite">Избранное</option>
+                            </select>
+
+                            <select id="videosSort">
+                                <option value="relevance">Сначала релевантные</option>
+                                <option value="popular">Популярные</option>
+                                <option value="likes">По лайкам</option>
+                                <option value="duration">По длительности</option>
+                                <option value="newest">Сначала новые (по id)</option>
+                            </select>
+                        </div>
+
+                        <div class="reading-results-count">
+                            <span id="videosResultsCount">Найдено: 0</span>
+                        </div>
+                    </div>
+
+                    <div class="videos-grid" id="videosGrid"></div>
+
+                    <div class="empty-state" id="noVideosState" style="display: none;">
+                        <i class="fas fa-video-slash"></i>
+                        <h3>Нет видео по фильтрам</h3>
+                        <p>Измените поиск или фильтры</p>
+                    </div>
+                </div>
+
+                <!-- Videos View -->
+                <div class="videos-view" id="videosView" style="display: none;">
+                    <div class="reading-header">
+                        <button class="btn btn-secondary btn-small" id="backToVideos">
+                            <i class="fas fa-arrow-left"></i> К списку
+                        </button>
+                        <span class="reading-level-badge" id="videoLevelBadge">A1</span>
+                    </div>
+
+                    <div class="videos-view-layout">
+                        <div class="video-main">
+                            <div class="reading-card">
+                                <div class="video-iframe-wrap">
+                                    <iframe id="videoFrame" src="" title="Video player"
+                                            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                                            allowfullscreen></iframe>
+                                </div>
+
+                                <h2 class="reading-title" id="videoTitle">Заголовок</h2>
+
+                                <div class="reading-meta">
+                                    <span><i class="fas fa-clock"></i> <span id="videoDuration">0:00</span></span>
+                                    <span style="margin-left:12px;"><i class="fas fa-eye"></i> <span id="videoViews">0</span></span>
+                                    <span style="margin-left:12px;"><i class="fas fa-thumbs-up"></i> <span id="videoLikes">0</span></span>
+                                    <span style="margin-left:auto;" id="videoStatusPill" class="status-badge learning">new</span>
+                                </div>
+
+                                <div class="reading-actions" style="justify-content:flex-start; gap:10px; flex-wrap:wrap;">
+                                    <button class="btn btn-secondary" id="videoLikeBtn">
+                                        <i class="fas fa-thumbs-up"></i> Лайк
+                                    </button>
+                                    <button class="btn btn-secondary" id="videoDislikeBtn">
+                                        <i class="fas fa-thumbs-down"></i> Дизлайк
+                                    </button>
+                                    <button class="btn btn-primary" id="videoToggleFavoriteBtn">
+                                        <i class="fas fa-bookmark"></i> В избранное
+                                    </button>
+                                    <button class="btn btn-success" id="videoMarkWatchedBtn">
+                                        <i class="fas fa-check"></i> Отметить как просмотрено
+                                    </button>
+                                    <button class="btn btn-warning" id="videoAddWordBtn">
+                                        <i class="fas fa-plus"></i> Добавить слово
+                                    </button>
+                                </div>
+
+                                <div class="video-description">
+                                    <h3><i class="fas fa-align-left"></i> Описание</h3>
+                                    <p id="videoDescription" style="white-space:pre-wrap; margin:0;">...</p>
+                                </div>
+
+                                <div class="video-new-words" id="videoNewWords" style="display:none; margin-top:14px;">
+                                    <h3><i class="fas fa-language"></i> Новые слова</h3>
+                                    <div id="videoNewWordsList" class="video-new-words-list"></div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <aside class="video-side">
+                            <div class="reading-card">
+                                <h3 style="margin-top:0;"><i class="fas fa-list"></i> Рекомендации</h3>
+                                <div id="videoRecommendations" class="video-reco-list"></div>
+                            </div>
+                        </aside>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Reading Section -->
+        <section id="reading-section" class="section">
+            <div class="section-header">
+                <div class="section-title">
+                    <h1><i class="fas fa-book-reader"></i> Чтение текстов</h1>
+                    <p class="section-subtitle">Читайте тексты на вашем уровне</p>
+                </div>
+            </div>
+
+            <div class="reading-container" id="readingContainer">
+                <!-- Reading Locked -->
+                <div class="reading-locked" id="readingLocked">
+                    <div class="locked-card">
+                        <div class="locked-icon">
+                            <i class="fas fa-lock"></i>
+                        </div>
+                        <h2>Чтение заблокировано</h2>
+                        <p>Для разблокировки выучите минимум <strong>350 слов</strong></p>
+                        <div class="locked-progress">
+                            <div class="locked-progress-bar">
+                                <div class="locked-progress-fill" id="readingProgressFill"></div>
+                            </div>
+                            <span id="readingProgressText">0 / 350 выученных слов</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Reading Setup -->
+                <div class="reading-setup" id="readingSetup" style="display: none;">
+                    <div class="reading-level-info">
+                        <div class="current-level-card">
+                            <div class="level-icon-large">
+                                <i class="fas fa-user-graduate" id="readingLevelIcon"></i>
+                            </div>
+                            <div class="level-text">
+                                <h3>Ваш уровень: <span id="readingCurrentLevel">A1</span></h3>
+                                <p>Тексты подобраны специально для вашего уровня</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="reading-filters">
+                        <div class="search-box reading-search-box">
+                            <i class="fas fa-search"></i>
+                            <input type="text" id="readingSearch" placeholder="Поиск по названию...">
+                            <button class="clear-search" id="clearReadingSearch">
+                                <i class="fas fa-times"></i>
+                            </button>
+                        </div>
+
+                        <div class="reading-filter-group">
+                            <select id="readingLevelFilter">
+                                <option value="all">Все доступные уровни</option>
+                                <option value="current">Мой текущий уровень</option>
+                            </select>
+
+                            <select id="readingAudioFilter">
+                                <option value="all">Все тексты</option>
+                                <option value="with-audio">С аудио</option>
+                                <option value="without-audio">Без аудио</option>
+                            </select>
+
+                            <select id="readingWordCountFilter"></select>
+                        </div>
+
+                        <div class="reading-results-count">
+                            <span id="textsResultsCount">Найдено: 0</span>
+                        </div>
+                    </div>
+
+                    <div class="texts-grid" id="textsGrid"></div>
+
+                    <div class="empty-state" id="noTextsState" style="display: none;">
+                        <i class="fas fa-file-alt"></i>
+                        <h3>Нет текстов для вашего уровня</h3>
+                        <p>Продолжайте учить слова, чтобы перейти на следующий уровень</p>
+                    </div>
+                </div>
+
+                <!-- Reading View -->
+                <div class="reading-view" id="readingView" style="display: none;">
+                    <div class="reading-header">
+                        <button class="btn btn-secondary btn-small" id="backToTexts">
+                            <i class="fas fa-arrow-left"></i> К списку
+                        </button>
+                        <span class="reading-level-badge" id="textLevelBadge">A1</span>
+                    </div>
+
+                    <div class="reading-card">
+                        <h2 class="reading-title" id="readingTitle">Заголовок текста</h2>
+                        <div class="reading-meta">
+                            <span><i class="fas fa-align-left"></i> <span id="readingWordCount">0</span> слов</span>
+                        </div>
+
+                        <div class="audio-controls" id="audioControls" style="display: none;">
+                            <button class="btn btn-audio" id="toggleAudioBtn">
+                                <i class="fas fa-play"></i> Воспроизвести
+                            </button>
+                            <div class="audio-progress-container">
+                                <div class="audio-progress-bar">
+                                    <div class="audio-progress-fill" id="audioProgress"></div>
+                                </div>
+                                <span class="audio-duration" id="audioDuration">0:00</span>
+                            </div>
+                        </div>
+
+                        <div class="reading-text" id="readingText">
+                            Текст будет здесь...
+                        </div>
+                    </div>
+
+                    <div class="reading-actions">
+                        <button class="btn btn-success btn-large" id="markAsRead">
+                            <i class="fas fa-check"></i> Отметить как прочитано
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Word Game Section -->
+        <section id="wordgame-section" class="section">
+            <div class="section-header">
+                <div class="section-title">
+                    <h1><i class="fas fa-gamepad"></i> Игра в слова</h1>
+                    <p class="section-subtitle">Проверьте свои знания в игровой форме</p>
+                </div>
+            </div>
+
+            <div class="game-container" id="gameContainer">
+                <div class="game-locked" id="gameLocked">
+                    <div class="locked-card">
+                        <div class="locked-icon">
+                            <i class="fas fa-lock"></i>
+                        </div>
+                        <h2>Игра заблокирована</h2>
+                        <p>Для разблокировки добавьте минимум <strong>100 слов</strong> в словарь</p>
+                        <div class="locked-progress">
+                            <div class="locked-progress-bar">
+                                <div class="locked-progress-fill" id="gameProgressFill"></div>
+                            </div>
+                            <span id="gameProgressText">0 / 100 слов</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="game-setup" id="gameSetup" style="display: none;">
+                    <div class="game-modes">
+                        <div class="game-mode-card" data-game="quiz">
+                            <div class="game-mode-icon">
+                                <i class="fas fa-question-circle"></i>
+                            </div>
+                            <h3>Викторина</h3>
+                            <p>Выберите правильный перевод</p>
+                            <button class="btn btn-primary" data-game="quiz">
+                                <i class="fas fa-play"></i> Играть
+                            </button>
+                        </div>
+                        <div class="game-mode-card" data-game="typing">
+                            <div class="game-mode-icon">
+                                <i class="fas fa-keyboard"></i>
+                            </div>
+                            <h3>Написание</h3>
+                            <p>Напишите слово по картинке</p>
+                            <button class="btn btn-primary" data-game="typing">
+                                <i class="fas fa-play"></i> Играть
+                            </button>
+                        </div>
+                        <div class="game-mode-card" data-game="match">
+                            <div class="game-mode-icon">
+                                <i class="fas fa-puzzle-piece"></i>
+                            </div>
+                            <h3>Сопоставление</h3>
+                            <p>Соедините слова с картинками</p>
+                            <button class="btn btn-primary" data-game="match">
+                                <i class="fas fa-play"></i> Играть
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="game-play" id="quizGame" style="display: none;">
+                    <div class="game-header">
+                        <button class="btn btn-secondary btn-small" id="exitQuiz">
+                            <i class="fas fa-arrow-left"></i> Выйти
+                        </button>
+                        <div class="game-score">
+                            <i class="fas fa-star"></i>
+                            <span id="quizScore">0</span>
+                        </div>
+                        <div class="game-timer">
+                            <i class="fas fa-clock"></i>
+                            <span id="quizTimer">00:00</span>
+                        </div>
+                    </div>
+                    <div class="quiz-card">
+                        <div class="quiz-image" id="quizImage"></div>
+                        <h2 id="quizWord">Word</h2>
+                        <div class="quiz-options" id="quizOptions"></div>
+                    </div>
+                </div>
+
+                <div class="game-play" id="typingGame" style="display: none;">
+                    <div class="game-header">
+                        <button class="btn btn-secondary btn-small" id="exitTyping">
+                            <i class="fas fa-arrow-left"></i> Выйти
+                        </button>
+                        <div class="game-score">
+                            <i class="fas fa-star"></i>
+                            <span id="typingScore">0</span>
+                        </div>
+                        <div class="game-lives">
+                            <span id="typingLives">
+                                <i class="fas fa-heart"></i>
+                                <i class="fas fa-heart"></i>
+                                <i class="fas fa-heart"></i>
+                            </span>
+                        </div>
+                    </div>
+                    <div class="typing-card">
+                        <div class="typing-image" id="typingImage"></div>
+                        <p class="typing-hint" id="typingHint">Напишите слово</p>
+                        <input type="text" id="typingInput" placeholder="Введите слово..." autocomplete="off">
+                        <button class="btn btn-primary" id="checkTyping">
+                            <i class="fas fa-check"></i> Проверить
+                        </button>
+                    </div>
+                </div>
+
+                <div class="game-play" id="matchGame" style="display: none;">
+                    <div class="game-header">
+                        <button class="btn btn-secondary btn-small" id="exitMatch">
+                            <i class="fas fa-arrow-left"></i> Выйти
+                        </button>
+                        <div class="game-score">
+                            <i class="fas fa-star"></i>
+                            <span id="matchScore">0</span>
+                        </div>
+                        <div class="game-timer">
+                            <i class="fas fa-clock"></i>
+                            <span id="matchTimer">00:00</span>
+                        </div>
+                    </div>
+                    <div class="match-grid" id="matchGrid"></div>
+                </div>
+
+                <div class="game-results" id="gameResults" style="display: none;">
+                    <div class="results-card">
+                        <div class="results-icon">
+                            <i class="fas fa-gamepad"></i>
+                        </div>
+                        <h2>Игра окончена!</h2>
+                        <div class="game-final-score">
+                            <span class="score-label">Ваш счёт:</span>
+                            <span class="score-value" id="finalScore">0</span>
+                        </div>
+                        <div class="results-actions">
+                            <button class="btn btn-secondary" id="playAgain">
+                                <i class="fas fa-redo"></i> Играть снова
+                            </button>
+                            <button class="btn btn-primary" id="backToGames">
+                                <i class="fas fa-gamepad"></i> Другие игры
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Progress Section -->
+        <section id="progress-section" class="section">
+            <div class="section-header">
+                <div class="section-title">
+                    <h1><i class="fas fa-chart-line"></i> Прогресс</h1>
+                    <p class="section-subtitle">Отслеживайте свой путь обучения</p>
+                </div>
+            </div>
+
+            <div class="progress-content">
+                <div class="progress-card level-card">
+                    <div class="level-display">
+                        <div class="level-badge" id="progressLevelBadge">
+                            <i class="fas fa-star"></i>
+                        </div>
+                        <div class="level-details">
+                            <h2 id="progressLevelName">Новичок</h2>
+                            <p id="progressLevelDesc">Начало пути к знаниям</p>
+                        </div>
+                    </div>
+                    <div class="level-progress-bar">
+                        <div class="level-progress-fill" id="levelProgressFill"></div>
+                    </div>
+                    <p class="level-progress-text" id="levelProgressText">0 / 10 слов до следующего уровня</p>
+                </div>
+
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <div class="stat-icon">
+                            <i class="fas fa-book"></i>
+                        </div>
+                        <div class="stat-info">
+                            <span class="stat-number" id="statTotal">0</span>
+                            <span class="stat-label">Всего слов</span>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon warning">
+                            <i class="fas fa-graduation-cap"></i>
+                        </div>
+                        <div class="stat-info">
+                            <span class="stat-number" id="statLearning">0</span>
+                            <span class="stat-label">В изучении</span>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon success">
+                            <i class="fas fa-check-circle"></i>
+                        </div>
+                        <div class="stat-info">
+                            <span class="stat-number" id="statLearned">0</span>
+                            <span class="stat-label">Выучено</span>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon accent">
+                            <i class="fas fa-percentage"></i>
+                        </div>
+                        <div class="stat-info">
+                            <span class="stat-number" id="statAccuracy">0%</span>
+                            <span class="stat-label">Точность</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="progress-card levels-card">
+                    <h3><i class="fas fa-trophy"></i> Уровни</h3>
+                    <div class="levels-list" id="levelsList"></div>
+                </div>
+
+                <div class="progress-card set-level-card">
+                    <h3><i class="fas fa-user-graduate"></i> Установить свой уровень</h3>
+                    <p>Если вы уже знаете английский, выберите свой уровень:</p>
+                    <select id="manualLevelSelect"></select>
+                    <button class="btn btn-primary" id="saveLevelBtn">
+                        <i class="fas fa-save"></i> Сохранить
+                    </button>
+                </div>
+            </div>
+        </section>
+
+        <!-- Settings Section -->
+        <section id="settings-section" class="section">
+            <div class="section-header">
+                <div class="section-title">
+                    <h1><i class="fas fa-cog"></i> Настройки</h1>
+                    <p class="section-subtitle">Настройте приложение под себя</p>
+                </div>
+            </div>
+
+            <div class="settings-content">
+                <div class="settings-card">
+                    <div class="settings-card-header">
+                        <i class="fas fa-palette"></i>
+                        <h3>Внешний вид</h3>
+                    </div>
+                    <div class="settings-card-body">
+                        <div class="setting-item">
+                            <div class="setting-info">
+                                <span class="setting-label">Тема</span>
+                                <span class="setting-desc">Выберите светлую или тёмную тему</span>
+                            </div>
+                            <div class="theme-switcher">
+                                <button class="theme-btn active" data-theme="light">
+                                    <i class="fas fa-sun"></i>
+                                    <span>Светлая</span>
+                                </button>
+                                <button class="theme-btn" data-theme="dark">
+                                    <i class="fas fa-moon"></i>
+                                    <span>Тёмная</span>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="settings-card">
+                    <div class="settings-card-header">
+                        <i class="fas fa-database"></i>
+                        <h3>Управление данными</h3>
+                    </div>
+                    <div class="settings-card-body">
+                        <div class="setting-item">
+                            <div class="setting-info">
+                                <span class="setting-label">Экспорт данных</span>
+                                <span class="setting-desc">Скачайте все ваши слова в JSON файл</span>
+                            </div>
+                            <button class="btn btn-secondary" id="exportBtn">
+                                <i class="fas fa-download"></i> Экспорт
+                            </button>
+                        </div>
+                        <div class="setting-item">
+                            <div class="setting-info">
+                                <span class="setting-label">Импорт данных</span>
+                                <span class="setting-desc">Загрузите слова из JSON файла</span>
+                            </div>
+                            <label class="btn btn-secondary">
+                                <i class="fas fa-upload"></i> Импорт
+                                <input type="file" id="importInput" accept=".json" hidden>
+                            </label>
+                        </div>
+                        <div class="setting-item danger">
+                            <div class="setting-info">
+                                <span class="setting-label">Очистить все данные</span>
+                                <span class="setting-desc">Удалить все слова и настройки</span>
+                            </div>
+                            <button class="btn btn-danger" id="clearAllBtn">
+                                <i class="fas fa-trash"></i> Очистить
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="settings-card">
+                    <div class="settings-card-header">
+                        <i class="fas fa-shield-alt"></i>
+                        <h3>Резервное копирование</h3>
+                    </div>
+                    <div class="settings-card-body">
+                        <div class="setting-item">
+                            <div class="setting-info">
+                                <span class="setting-label">Автосохранение</span>
+                                <span class="setting-desc">Автоматически сохранять данные каждые 20 дней</span>
+                            </div>
+                            <label class="toggle-switch">
+                                <input type="checkbox" id="autoBackupToggle" checked>
+                                <span class="toggle-slider"></span>
+                            </label>
+                        </div>
+                        <div class="setting-item">
+                            <div class="setting-info">
+                                <span class="setting-label">Последнее сохранение</span>
+                                <span class="setting-desc" id="lastBackupDate">Никогда</span>
+                            </div>
+                            <button class="btn btn-secondary" id="manualBackupBtn">
+                                <i class="fas fa-save"></i> Создать копию
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="settings-card">
+                    <div class="settings-card-header">
+                        <i class="fas fa-info-circle"></i>
+                        <h3>О приложении</h3>
+                    </div>
+                    <div class="settings-card-body">
+                        <div class="about-info">
+                            <p><strong>Словарь</strong> v2.5</p>
+                            <p>Приложение для изучения английских слов с картинками и примерами.</p>
+                            <p class="storage-info">
+                                <i class="fas fa-hdd"></i>
+                                Использовано: <span id="storageUsed">0 KB</span>
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+</div>
+
+<!-- Modals -->
+<div class="modal" id="wordModal">
+    <div class="modal-overlay"></div>
+    <div class="modal-content modal-large">
+        <div class="modal-header">
+            <h2 id="modalTitle"><i class="fas fa-plus-circle"></i> Добавить слово</h2>
+            <button class="modal-close" id="closeModal"><i class="fas fa-times"></i></button>
+        </div>
+        <form id="wordForm">
+            <div class="modal-body">
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="wordInput"><i class="fas fa-font"></i> Слово на английском *</label>
+                        <input type="text" id="wordInput" required placeholder="Например: serendipity">
+                    </div>
+                    <div class="form-group">
+                        <label for="translationInput"><i class="fas fa-language"></i> Перевод</label>
+                        <input type="text" id="translationInput" placeholder="Например: счастливая случайность">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="imageInput"><i class="fas fa-image"></i> URL картинки слова *</label>
+                    <div class="image-input-group">
+                        <input type="url" id="imageInput" required placeholder="https://example.com/image.jpg">
+                        <button type="button" class="btn btn-secondary" id="previewImageBtn"><i class="fas fa-eye"></i></button>
+                    </div>
+                    <div class="image-preview" id="imagePreview"></div>
+                </div>
+                <div class="form-group">
+                    <label><i class="fas fa-quote-left"></i> Примеры предложений</label>
+                    <div class="examples-list" id="examplesList">
+                        <div class="example-item">
+                            <div class="example-text-group">
+                                <input type="text" class="example-text" placeholder="Пример использования слова">
+                            </div>
+                            <div class="example-image-group">
+                                <input type="url" class="example-image" placeholder="URL картинки для примера (необязательно)">
+                                <button type="button" class="preview-example-img btn-icon"><i class="fas fa-eye"></i></button>
+                            </div>
+                            <div class="example-image-preview"></div>
+                            <button type="button" class="remove-example btn-icon danger"><i class="fas fa-trash"></i></button>
+                        </div>
+                    </div>
+                    <button type="button" class="btn btn-secondary btn-small" id="addExample">
+                        <i class="fas fa-plus"></i> Добавить пример
+                    </button>
+                </div>
+                <div class="form-group">
+                    <label for="statusSelect"><i class="fas fa-tag"></i> Статус</label>
+                    <select id="statusSelect">
+                        <option value="learning">В изучении</option>
+                        <option value="learned">Выучено</option>
+                    </select>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" id="cancelBtn">Отмена</button>
+                <button type="submit" class="btn btn-primary" id="saveBtn"><i class="fas fa-save"></i> Сохранить</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<div class="modal" id="viewModal">
+    <div class="modal-overlay"></div>
+    <div class="modal-content modal-large">
+        <div class="modal-header">
+            <h2><i class="fas fa-eye"></i> Просмотр слова</h2>
+            <button class="modal-close" id="closeViewModal"><i class="fas fa-times"></i></button>
+        </div>
+        <div class="modal-body">
+            <div class="view-word-header">
+                <h1 id="viewWord">Word</h1>
+                <button class="speak-btn large" id="viewSpeak"><i class="fas fa-volume-up"></i></button>
+            </div>
+            <p class="view-translation" id="viewTranslation">Перевод</p>
+            <div class="view-image" id="viewImage"></div>
+            <div class="view-status" id="viewStatus"></div>
+            <div class="view-examples" id="viewExamples">
+                <h3><i class="fas fa-quote-left"></i> Примеры:</h3>
+                <div class="examples-gallery" id="viewExamplesList"></div>
+            </div>
+        </div>
+        <div class="modal-footer">
+            <button class="btn btn-secondary" id="editFromView"><i class="fas fa-edit"></i> Редактировать</button>
+            <button class="btn btn-danger" id="deleteFromView"><i class="fas fa-trash"></i> Удалить</button>
+        </div>
+    </div>
+</div>
+
+<div class="modal" id="deleteModal">
+    <div class="modal-overlay"></div>
+    <div class="modal-content modal-small">
+        <div class="modal-header">
+            <h2><i class="fas fa-exclamation-triangle"></i> Подтверждение</h2>
+            <button class="modal-close" id="closeDeleteModal"><i class="fas fa-times"></i></button>
+        </div>
+        <div class="modal-body">
+            <div class="delete-content">
+                <i class="fas fa-trash-alt"></i>
+                <p>Вы уверены, что хотите удалить слово "<strong id="deleteWordName"></strong>"?</p>
+            </div>
+        </div>
+        <div class="modal-footer">
+            <button class="btn btn-secondary" id="cancelDelete">Отмена</button>
+            <button class="btn btn-danger" id="confirmDelete"><i class="fas fa-trash"></i> Удалить</button>
+        </div>
+    </div>
+</div>
+
+<div class="modal" id="clearModal">
+    <div class="modal-overlay"></div>
+    <div class="modal-content modal-small">
+        <div class="modal-header">
+            <h2><i class="fas fa-exclamation-triangle"></i> Внимание!</h2>
+            <button class="modal-close" id="closeClearModal"><i class="fas fa-times"></i></button>
+        </div>
+        <div class="modal-body">
+            <div class="delete-content">
+                <i class="fas fa-bomb"></i>
+                <p>Это действие удалит <strong>ВСЕ</strong> ваши данные безвозвратно!</p>
+                <p>Введите "УДАЛИТЬ" для подтверждения:</p>
+                <input type="text" id="clearConfirmInput" placeholder="УДАЛИТЬ">
+            </div>
+        </div>
+        <div class="modal-footer">
+            <button class="btn btn-secondary" id="cancelClear">Отмена</button>
+            <button class="btn btn-danger" id="confirmClear" disabled><i class="fas fa-trash"></i> Удалить всё</button>
+        </div>
+    </div>
+</div>
+
+<!-- Close Day Modal (NEW) -->
+<div class="modal" id="closeDayModal">
+    <div class="modal-overlay"></div>
+    <div class="modal-content modal-large">
+        <div class="modal-header">
+            <h2><i class="fas fa-calendar-check"></i> Закрыть день</h2>
+            <button class="modal-close" id="closeCloseDayModal"><i class="fas fa-times"></i></button>
+        </div>
+        <div class="modal-body">
+            <div class="close-day-form">
+                <p class="close-day-date" id="closeDayDate">Понедельник, 1 января 2024</p>
+                
+                <div class="close-day-stats-grid">
+                    <div class="close-day-stat">
+                        <label><i class="fas fa-plus-circle"></i> Новых слов добавлено</label>
+                        <input type="number" id="closeDayNewWords" value="0" min="0" readonly title="Считается автоматически">
+                    </div>
+                    <div class="close-day-stat">
+                        <label><i class="fas fa-check-circle"></i> Слов выучено</label>
+                        <input type="number" id="closeDayLearnedWords" value="0" min="0" readonly title="Считается автоматически">
+                    </div>
+                    <div class="close-day-stat">
+                        <label><i class="fas fa-book-reader"></i> Текстов прочитано</label>
+                        <input type="number" id="closeDayTexts" value="0" min="0" readonly title="Считается автоматически">
+                    </div>
+                    <div class="close-day-stat">
+                        <label><i class="fas fa-video"></i> Видео просмотрено</label>
+                        <input type="number" id="closeDayVideos" value="0" min="0" readonly title="Считается автоматически">
+                    </div>
+                    <div class="close-day-stat">
+                        <label><i class="fas fa-newspaper"></i> Новостных видео</label>
+                        <input type="number" id="closeDayNews" value="0" min="0" readonly title="Считается автоматически">
+                    </div>
+                    <div class="close-day-stat">
+                        <label><i class="fas fa-microphone"></i> Минут говорения</label>
+                        <input type="number" id="closeDaySpeaking" value="0" min="0" readonly title="Считается автоматически">
+                    </div>
+                    <div class="close-day-stat">
+                        <label><i class="fas fa-pen"></i> Минут письма</label>
+                        <input type="number" id="closeDayWriting" value="0" min="0" readonly title="Считается автоматически">
+                    </div>
+                    <div class="close-day-stat">
+                        <label><i class="fas fa-headphones"></i> Минут аудирования</label>
+                        <input type="number" id="closeDayListening" value="0" min="0" readonly title="Считается автоматически">
+                    </div>
+                </div>
+
+                <div class="close-day-notes">
+                    <label><i class="fas fa-sticky-note"></i> Заметки на день (опционально)</label>
+                    <textarea id="closeDayNotes" placeholder="Что вы изучали? Какие были сложности?"></textarea>
+                </div>
+            </div>
+        </div>
+        <div class="modal-footer">
+            <button class="btn btn-secondary" id="cancelCloseDay">Отмена</button>
+            <button class="btn btn-success" id="confirmCloseDay">
+                <i class="fas fa-check"></i> Закрыть день
+            </button>
+        </div>
+    </div>
+</div>
+
+<!-- Goal Complete Modal (NEW) -->
+<div class="modal" id="goalCompleteModal">
+    <div class="modal-overlay"></div>
+    <div class="modal-content modal-medium">
+        <div class="modal-header">
+            <h2><i class="fas fa-trophy"></i> Цель достигнута!</h2>
+            <button class="modal-close" id="closeGoalCompleteModal"><i class="fas fa-times"></i></button>
+        </div>
+        <div class="modal-body">
+            <div class="goal-complete-content">
+                <div class="goal-complete-icon">
+                    <i class="fas fa-medal"></i>
+                </div>
+                <h3>Поздравляем!</h3>
+                <p>Вы успешно завершили цель!</p>
+                
+                <div class="goal-complete-summary" id="goalCompleteSummary">
+                    <!-- Динамически заполняется -->
+                </div>
+            </div>
+        </div>
+        <div class="modal-footer">
+            <button class="btn btn-primary" id="viewGoalHistory">
+                <i class="fas fa-history"></i> Посмотреть историю
+            </button>
+            <button class="btn btn-success" id="startNewGoal">
+                <i class="fas fa-plus"></i> Начать новую цель
+            </button>
+        </div>
+    </div>
+</div>
+
+<!-- View Goal History Item Modal (NEW) -->
+<div class="modal" id="viewGoalModal">
+    <div class="modal-overlay"></div>
+    <div class="modal-content modal-large">
+        <div class="modal-header">
+            <h2><i class="fas fa-bullseye"></i> Детали цели</h2>
+            <button class="modal-close" id="closeViewGoalModal"><i class="fas fa-times"></i></button>
+        </div>
+        <div class="modal-body" id="viewGoalBody">
+            <!-- Динамически заполняется -->
+        </div>
+        <div class="modal-footer">
+            <button class="btn btn-secondary" id="closeViewGoalBtn">Закрыть</button>
+        </div>
+    </div>
+</div>
+
+<div class="toast-container" id="toastContainer"></div>
+
+<script src="data.js"></script>
+<script src="app.part1.js"></script>
+<script src="app.part2.js"></script>
+<script src="goal.js"></script>
+</body>
+</html>
