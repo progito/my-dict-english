@@ -1581,7 +1581,7 @@ getDailyActivityStats(dateStr) {
         const image = imageInput?.value.trim();
         const status = statusSelect?.value || 'learning';
 
-        if (!word || !image) {
+        if (!word) {
             this.showToast('Заполните обязательные поля', 'error');
             return;
         }
