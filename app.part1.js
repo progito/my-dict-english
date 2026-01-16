@@ -454,11 +454,107 @@ ${this.transcript.trim()}
         this.loadGoalData();
     }
 
-    saveWords() {
-        localStorage.setItem('dictionary_words', JSON.stringify(this.words));
-        this.updateAllStats();
-        this.updateGameLock();
-        this.updateReadingLock();
+    saveWord() {
+        const wordInput = document.getElementById('wordInput');
+        const translationInput = document.getElementById('translationInput');
+        const imageInput = document.getElementById('imageInput');
+        const statusSelect = document.getElementById('statusSelect');
+    
+        const word = wordInput?.value.trim();
+        const translation = translationInput?.value.trim();
+        const image = imageInput?.value.trim();
+        const status = statusSelect?.value || 'learning';
+    
+        // Только слово обязательно! Картинка - нет
+        if (!word) {
+            this.showToast('Введите слово на английском', 'error');
+            return;
+        }
+    
+        const examples = Array.from(document.querySelectorAll('.example-item')).map(item => {
+            const textInput = item.querySelector('.example-text');
+            const imgInput = item.querySelector('.example-image');
+            const text = textInput?.value.trim();
+            const img = imgInput?.value.trim();
+            if (text) return { text, image: img };
+            return null;
+        }).filter(ex => ex !== null);
+    
+        // Используем плейсхолдер если картинка не указана
+        const finalImage = image || this.generatePlaceholderImage(word);
+    
+        if (this.currentWordId) {
+            const wordObj = this.words.find(w => w.id === this.currentWordId);
+            if (wordObj) {
+                wordObj.word = word;
+                wordObj.translation = translation;
+                wordObj.image = finalImage;
+                wordObj.status = status;
+                wordObj.examples = examples;
+                wordObj.updatedAt = Date.now();
+            }
+            this.showToast('Слово обновлено', 'success');
+        } else {
+            const newWord = {
+                id: 'word-' + Date.now(),
+                word,
+                translation,
+                image: finalImage,
+                status,
+                examples,
+                createdAt: Date.now(),
+                updatedAt: Date.now()
+            };
+            this.words.unshift(newWord);
+    
+            // автостатистика: новое слово добавлено сегодня
+            this.incrementDailyActivity('newWords', 1);
+    
+            this.showToast('Слово добавлено', 'success');
+        }
+    
+        this.saveWords();
+        this.closeModal('wordModal');
+        this.renderCurrentSection();
+    }
+    
+    // Добавьте этот новый метод ПОСЛЕ saveWord():
+    generatePlaceholderImage(word) {
+        const colors = [
+            ['#667eea', '#764ba2'],
+            ['#f093fb', '#f5576c'],
+            ['#4facfe', '#00f2fe'],
+            ['#43e97b', '#38f9d7'],
+            ['#fa709a', '#fee140'],
+            ['#a8edea', '#fed6e3'],
+            ['#ff9a9e', '#fecfef'],
+            ['#a18cd1', '#fbc2eb']
+        ];
+        
+        // Цвет зависит от первой буквы (для консистентности)
+        const charCode = (word || 'A').charCodeAt(0);
+        const colorIndex = charCode % colors.length;
+        const [color1, color2] = colors[colorIndex];
+        
+        const letter = (word || '?').charAt(0).toUpperCase();
+        
+        const svg = `
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200">
+                <defs>
+                    <linearGradient id="grad${charCode}" x1="0%" y1="0%" x2="100%" y2="100%">
+                        <stop offset="0%" style="stop-color:${color1}"/>
+                        <stop offset="100%" style="stop-color:${color2}"/>
+                    </linearGradient>
+                </defs>
+                <rect fill="url(#grad${charCode})" width="200" height="200" rx="20"/>
+                <text x="100" y="115" font-family="Arial, sans-serif" font-size="80" 
+                      font-weight="bold" text-anchor="middle" fill="white">
+                    ${letter}
+                </text>
+            </svg>
+        `;
+        
+        return 'data:image/svg+xml,' + encodeURIComponent(svg.trim());
     }
 
     saveSettings() {
