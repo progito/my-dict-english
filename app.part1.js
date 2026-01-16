@@ -424,14 +424,14 @@ ${this.transcript.trim()}
     loadData() {
         const savedWords = localStorage.getItem('dictionary_words');
         this.words = savedWords ? JSON.parse(savedWords) : [];
-
+    
         const savedSettings = localStorage.getItem('dictionary_settings');
         this.settings = savedSettings ? JSON.parse(savedSettings) : {
             theme: 'light',
             autoBackup: true,
             manualLevel: 'auto'
         };
-
+    
         const savedStats = localStorage.getItem('dictionary_stats');
         this.stats = savedStats ? JSON.parse(savedStats) : {
             totalPractices: 0,
@@ -439,17 +439,19 @@ ${this.transcript.trim()}
             wrongAnswers: 0,
             lastBackup: null
         };
-
+    
         const savedReadTexts = localStorage.getItem('dictionary_read_texts');
         this.readTexts = savedReadTexts ? JSON.parse(savedReadTexts) : [];
-
+    
         const savedAudioCache = localStorage.getItem('dictionary_audio_cache');
         this.audioCache = savedAudioCache ? JSON.parse(savedAudioCache) : {};
-
+    
         const savedVideosMeta = localStorage.getItem('dictionary_videos_meta');
         this.videosMeta = savedVideosMeta ? JSON.parse(savedVideosMeta) : {};
+        
         const savedDailyActivity = localStorage.getItem(this.DAILY_ACTIVITY_KEY);
         this.dailyActivity = savedDailyActivity ? JSON.parse(savedDailyActivity) : {};
+        
         // Загрузка данных целей
         this.loadGoalData();
     }
