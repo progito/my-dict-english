@@ -455,7 +455,12 @@ ${this.transcript.trim()}
         // Загрузка данных целей
         this.loadGoalData();
     }
-
+    saveWords() {
+        localStorage.setItem('dictionary_words', JSON.stringify(this.words));
+        this.updateAllStats();
+        this.updateGameLock();
+        this.updateReadingLock();
+    }
     
 
     saveSettings() {
