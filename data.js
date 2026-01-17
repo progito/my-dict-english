@@ -1106,6 +1106,30 @@ const videosData = [
     views: 350
   },
   {
+    id: 171,
+    level: 'A2',
+    title: 'Simple Daily Routine English | Easy English Listening Practice (A2 Level)',
+    description: '-',
+    duration: '12:48',
+    link: 'https://www.youtube.com/embed/SztMnWtbOvc',
+    thumbnail: 'https://i.ytimg.com/vi/SztMnWtbOvc/hqdefault.jpg',
+    status: 'new',
+    likes: 4000,
+    views: 165000
+  },
+  {
+    id: 172,
+    level: 'A2',
+    title: 'A2 Level English Listening Practice - Soft Skills',
+    description: '-',
+    duration: '14:04',
+    link: 'https://www.youtube.com/embed/jqj5FdNIwsQ',
+    thumbnail: 'https://i.ytimg.com/vi/jqj5FdNIwsQ/hqdefault.jpg',
+    status: 'new',
+    likes: 3200,
+    views: 87000
+  },
+  {
     id: 18,
     level: 'A2',
     title: 'How Learning English Changed My Life Forever | English Listening A2 Podcast for Beginners',
