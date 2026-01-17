@@ -14,6 +14,7 @@ class DictionaryApp {
         this.audioCache = {};
         this.currentAudio = null;
         this.isAudioPlaying = false;
+        this.audioLoop = false; // НОВОЕ: режим повтора
         this.listeningSession = {
             active: false,
             lastTime: 0,
@@ -845,6 +846,7 @@ getDailyActivityStats(dateStr) {
         document.getElementById('backToTexts')?.addEventListener('click', () => this.showTextsSetup());
         document.getElementById('markAsRead')?.addEventListener('click', () => this.markTextAsRead());
         document.getElementById('toggleAudioBtn')?.addEventListener('click', () => this.toggleAudio());
+        document.getElementById('toggleLoopBtn')?.addEventListener('click', () => this.toggleAudioLoop());
     }
 
     // ===== SECTIONS =====
@@ -947,6 +949,10 @@ getDailyActivityStats(dateStr) {
             this.currentAudio = null;
             this.isAudioPlaying = false;
         }
+        // Сбросить UI кнопки повтора при смене текста
+        this.audioLoop = false;
+        const loopBtn = document.getElementById('toggleLoopBtn');
+        if (loopBtn) loopBtn.classList.remove('active');
     }
 
     setupAudio(audioSrc) {
@@ -995,14 +1001,27 @@ getDailyActivityStats(dateStr) {
         });
 
         this.currentAudio.addEventListener('ended', () => {
-            this.isAudioPlaying = false;
-            if (toggleBtn) {
-                toggleBtn.innerHTML = '<i class="fas fa-play"></i> Воспроизвести';
-                toggleBtn.classList.remove('playing');
+            if (this.audioLoop) {
+                // Повтор аудио
+                this.currentAudio.currentTime = 0;
+                this.currentAudio.play().catch(e => console.error('Loop play error:', e));
+                // Обновляем lastTime для корректного подсчёта listening
+                if (this.listeningSession) {
+                    this.listeningSession.lastTime = 0;
+                }
+            } else {
+                // Остановка
+                this.isAudioPlaying = false;
+                if (this.listeningSession) this.listeningSession.active = false;
+                this.flushListeningMinutes?.();
+                
+                if (toggleBtn) {
+                    toggleBtn.innerHTML = '<i class="fas fa-play"></i> Воспроизвести';
+                    toggleBtn.classList.remove('playing');
+                }
+                if (audioProgress) audioProgress.style.width = '0%';
             }
-            if (audioProgress) audioProgress.style.width = '0%';
         });
-
         this.currentAudio.addEventListener('error', () => {
             if (audioControls) audioControls.style.display = 'none';
             this.showToast('Ошибка загрузки аудио', 'error');
@@ -1019,7 +1038,19 @@ getDailyActivityStats(dateStr) {
         const secs = Math.floor(seconds % 60);
         return `${mins}:${secs.toString().padStart(2, '0')}`;
     }
-
+    toggleAudioLoop() {
+        this.audioLoop = !this.audioLoop;
+        
+        const loopBtn = document.getElementById('toggleLoopBtn');
+        if (loopBtn) {
+            loopBtn.classList.toggle('active', this.audioLoop);
+        }
+        
+        this.showToast(
+            this.audioLoop ? 'Повтор включён 🔁' : 'Повтор выключен', 
+            'info'
+        );
+    }
     // ===== READING SECTION =====
     updateReadingSection() {
         const learnedCount = this.words.filter(w => w.status === 'learned').length;
