@@ -76,6 +76,13 @@
                     </span>
                 </button>
 
+                <!-- НОВОЕ: Правила -->
+                <button class="nav-item" data-section="rules">
+                    <i class="fas fa-gavel"></i>
+                    <span>Правила</span>
+                    <span class="nav-badge" id="navRulesBadge">0</span>
+                </button>
+
                 <button class="nav-item" data-section="wordgame">
                     <i class="fas fa-gamepad"></i>
                     <span>Игра в слова</span>
@@ -1082,6 +1089,7 @@
                                 <span class="audio-duration" id="audioDuration">0:00</span>
                             </div>
                         </div>
+
                         <div class="reading-text" id="readingText">
                             Текст будет здесь...
                         </div>
@@ -1093,6 +1101,64 @@
                         </button>
                     </div>
                 </div>
+            </div>
+        </section>
+
+        <!-- ===================== RULES SECTION (NEW) ===================== -->
+        <section id="rules-section" class="section">
+            <div class="section-header">
+                <div class="section-title">
+                    <h1><i class="fas fa-gavel"></i> Правила</h1>
+                    <p class="section-subtitle">Грамматические правила и заметки</p>
+                </div>
+                <div class="section-header-actions">
+                    <button class="btn btn-danger btn-small" id="deleteSelectedRulesBtn" style="display: none;">
+                        <i class="fas fa-trash"></i> Удалить выбранные (<span id="selectedRulesCount">0</span>)
+                    </button>
+                    <button class="btn btn-primary" id="addRuleBtn">
+                        <i class="fas fa-plus"></i> Добавить правило
+                    </button>
+                </div>
+            </div>
+
+            <div class="rules-toolbar">
+                <div class="search-box">
+                    <i class="fas fa-search"></i>
+                    <input type="text" id="rulesSearchInput" placeholder="Поиск правил...">
+                    <button class="clear-search" id="clearRulesSearch">
+                        <i class="fas fa-times"></i>
+                    </button>
+                </div>
+                <div class="filter-group">
+                    <select id="rulesFormatFilter">
+                        <option value="all">Все форматы</option>
+                        <option value="text">Текстовые</option>
+                        <option value="table">Табличные</option>
+                    </select>
+                    <select id="rulesSortSelect">
+                        <option value="newest">Сначала новые</option>
+                        <option value="oldest">Сначала старые</option>
+                        <option value="az">A-Z</option>
+                        <option value="za">Z-A</option>
+                    </select>
+                </div>
+                <label class="rules-select-all-label">
+                    <input type="checkbox" id="rulesSelectAll">
+                    <span>Выбрать все</span>
+                </label>
+            </div>
+
+            <div class="rules-grid" id="rulesGrid">
+                <!-- Динамически заполняется -->
+            </div>
+
+            <div class="empty-state" id="rulesEmptyState">
+                <i class="fas fa-gavel"></i>
+                <h3>Нет правил</h3>
+                <p>Добавьте первое грамматическое правило</p>
+                <button class="btn btn-primary" id="rulesEmptyAddBtn">
+                    <i class="fas fa-plus"></i> Добавить правило
+                </button>
             </div>
         </section>
 
@@ -1433,7 +1499,7 @@
                     </div>
                     <div class="settings-card-body">
                         <div class="about-info">
-                            <p><strong>Словарь</strong> v2.5</p>
+                            <p><strong>Словарь</strong> v2.6</p>
                             <p>Приложение для изучения английских слов с картинками и примерами.</p>
                             <p class="storage-info">
                                 <i class="fas fa-hdd"></i>
@@ -1447,7 +1513,9 @@
     </main>
 </div>
 
-<!-- Modals -->
+<!-- ===================== MODALS ===================== -->
+
+<!-- Word Modal -->
 <div class="modal" id="wordModal">
     <div class="modal-overlay"></div>
     <div class="modal-content modal-large">
@@ -1510,6 +1578,7 @@
     </div>
 </div>
 
+<!-- View Word Modal -->
 <div class="modal" id="viewModal">
     <div class="modal-overlay"></div>
     <div class="modal-content modal-large">
@@ -1537,6 +1606,7 @@
     </div>
 </div>
 
+<!-- Delete Word Modal -->
 <div class="modal" id="deleteModal">
     <div class="modal-overlay"></div>
     <div class="modal-content modal-small">
@@ -1557,6 +1627,7 @@
     </div>
 </div>
 
+<!-- Clear All Modal -->
 <div class="modal" id="clearModal">
     <div class="modal-overlay"></div>
     <div class="modal-content modal-small">
@@ -1579,7 +1650,7 @@
     </div>
 </div>
 
-<!-- Close Day Modal (NEW) -->
+<!-- Close Day Modal -->
 <div class="modal" id="closeDayModal">
     <div class="modal-overlay"></div>
     <div class="modal-content modal-large">
@@ -1641,7 +1712,7 @@
     </div>
 </div>
 
-<!-- Goal Complete Modal (NEW) -->
+<!-- Goal Complete Modal -->
 <div class="modal" id="goalCompleteModal">
     <div class="modal-overlay"></div>
     <div class="modal-content modal-medium">
@@ -1673,7 +1744,7 @@
     </div>
 </div>
 
-<!-- View Goal History Item Modal (NEW) -->
+<!-- View Goal History Item Modal -->
 <div class="modal" id="viewGoalModal">
     <div class="modal-overlay"></div>
     <div class="modal-content modal-large">
@@ -1690,11 +1761,174 @@
     </div>
 </div>
 
+<!-- ===================== RULE MODAL (NEW) ===================== -->
+<div class="modal" id="ruleModal">
+    <div class="modal-overlay"></div>
+    <div class="modal-content modal-large">
+        <div class="modal-header">
+            <h2 id="ruleModalTitle"><i class="fas fa-plus-circle"></i> Добавить правило</h2>
+            <button class="modal-close" id="closeRuleModal"><i class="fas fa-times"></i></button>
+        </div>
+        <form id="ruleForm">
+            <div class="modal-body">
+                <!-- Заголовок -->
+                <div class="form-group">
+                    <label for="ruleTitleInput"><i class="fas fa-heading"></i> Заголовок *</label>
+                    <input type="text" id="ruleTitleInput" required placeholder="Например: Present Simple">
+                </div>
+
+                <!-- Превью картинка -->
+                <div class="form-group">
+                    <label for="ruleImageInput"><i class="fas fa-image"></i> URL картинки (необязательно)</label>
+                    <div class="image-input-group">
+                        <input type="url" id="ruleImageInput" placeholder="https://example.com/image.jpg">
+                        <button type="button" class="btn btn-secondary" id="previewRuleImageBtn"><i class="fas fa-eye"></i></button>
+                    </div>
+                    <div class="image-preview" id="ruleImagePreview"></div>
+                </div>
+
+                <!-- Выбор формата -->
+                <div class="form-group">
+                    <label><i class="fas fa-list-alt"></i> Формат правила</label>
+                    <div class="rule-format-selector">
+                        <label class="rule-format-option">
+                            <input type="radio" name="ruleFormat" value="text" checked>
+                            <span class="rule-format-card">
+                                <i class="fas fa-align-left"></i>
+                                <span>Текст</span>
+                            </span>
+                        </label>
+                        <label class="rule-format-option">
+                            <input type="radio" name="ruleFormat" value="table">
+                            <span class="rule-format-card">
+                                <i class="fas fa-table"></i>
+                                <span>Таблица</span>
+                            </span>
+                        </label>
+                    </div>
+                </div>
+
+                <!-- Текстовый формат -->
+                <div class="rule-text-format" id="ruleTextFormat">
+                    <div class="form-group">
+                        <label for="ruleContentInput"><i class="fas fa-file-alt"></i> Текст правила</label>
+                        <textarea id="ruleContentInput" rows="5" placeholder="Опишите правило..."></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label for="ruleExamplesInput"><i class="fas fa-lightbulb"></i> Примеры (каждый с новой строки)</label>
+                        <textarea id="ruleExamplesInput" rows="4" placeholder="I go to school every day.&#10;She works at a bank.&#10;They play football on Sundays."></textarea>
+                    </div>
+                </div>
+
+                <!-- Табличный формат -->
+                <div class="rule-table-format" id="ruleTableFormat" style="display: none;">
+                    <div class="form-group">
+                        <label><i class="fas fa-table"></i> Таблица</label>
+                        <div class="rule-table-controls">
+                            <button type="button" class="btn btn-secondary btn-small" id="addTableColumn">
+                                <i class="fas fa-plus"></i> Столбец
+                            </button>
+                            <button type="button" class="btn btn-secondary btn-small" id="addTableRow">
+                                <i class="fas fa-plus"></i> Строка
+                            </button>
+                        </div>
+                        <div class="rule-table-wrapper">
+                            <table class="rule-table-editor" id="ruleTableEditor">
+                                <thead>
+                                    <tr id="ruleTableHeader">
+                                        <th><input type="text" placeholder="Заголовок 1" class="table-header-input"></th>
+                                        <th><input type="text" placeholder="Заголовок 2" class="table-header-input"></th>
+                                        <th class="table-actions-col"></th>
+                                    </tr>
+                                </thead>
+                                <tbody id="ruleTableBody">
+                                    <tr>
+                                        <td><input type="text" placeholder="Ячейка" class="table-cell-input"></td>
+                                        <td><input type="text" placeholder="Ячейка" class="table-cell-input"></td>
+                                        <td class="table-row-actions">
+                                            <button type="button" class="btn-icon danger remove-table-row"><i class="fas fa-trash"></i></button>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" id="cancelRuleBtn">Отмена</button>
+                <button type="submit" class="btn btn-primary" id="saveRuleBtn"><i class="fas fa-save"></i> Сохранить</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- View Rule Modal -->
+<div class="modal" id="viewRuleModal">
+    <div class="modal-overlay"></div>
+    <div class="modal-content modal-large">
+        <div class="modal-header">
+            <h2><i class="fas fa-gavel"></i> Просмотр правила</h2>
+            <button class="modal-close" id="closeViewRuleModal"><i class="fas fa-times"></i></button>
+        </div>
+        <div class="modal-body" id="viewRuleBody">
+            <!-- Динамически заполняется -->
+        </div>
+        <div class="modal-footer">
+            <button class="btn btn-secondary" id="editRuleFromView"><i class="fas fa-edit"></i> Редактировать</button>
+            <button class="btn btn-danger" id="deleteRuleFromView"><i class="fas fa-trash"></i> Удалить</button>
+        </div>
+    </div>
+</div>
+
+<!-- Delete Rule Modal -->
+<div class="modal" id="deleteRuleModal">
+    <div class="modal-overlay"></div>
+    <div class="modal-content modal-small">
+        <div class="modal-header">
+            <h2><i class="fas fa-exclamation-triangle"></i> Удаление правила</h2>
+            <button class="modal-close" id="closeDeleteRuleModal"><i class="fas fa-times"></i></button>
+        </div>
+        <div class="modal-body">
+            <div class="delete-content">
+                <i class="fas fa-trash-alt"></i>
+                <p>Вы уверены, что хотите удалить правило "<strong id="deleteRuleName"></strong>"?</p>
+            </div>
+        </div>
+        <div class="modal-footer">
+            <button class="btn btn-secondary" id="cancelDeleteRule">Отмена</button>
+            <button class="btn btn-danger" id="confirmDeleteRule"><i class="fas fa-trash"></i> Удалить</button>
+        </div>
+    </div>
+</div>
+
+<!-- Delete Multiple Rules Modal -->
+<div class="modal" id="deleteMultipleRulesModal">
+    <div class="modal-overlay"></div>
+    <div class="modal-content modal-small">
+        <div class="modal-header">
+            <h2><i class="fas fa-exclamation-triangle"></i> Удаление правил</h2>
+            <button class="modal-close" id="closeDeleteMultipleRulesModal"><i class="fas fa-times"></i></button>
+        </div>
+        <div class="modal-body">
+            <div class="delete-content">
+                <i class="fas fa-trash-alt"></i>
+                <p>Вы уверены, что хотите удалить <strong id="deleteRulesCount">0</strong> выбранных правил?</p>
+            </div>
+        </div>
+        <div class="modal-footer">
+            <button class="btn btn-secondary" id="cancelDeleteMultipleRules">Отмена</button>
+            <button class="btn btn-danger" id="confirmDeleteMultipleRules"><i class="fas fa-trash"></i> Удалить все</button>
+        </div>
+    </div>
+</div>
+
 <div class="toast-container" id="toastContainer"></div>
 
 <script src="data.js"></script>
 <script src="app.part1.js"></script>
 <script src="app.part2.js"></script>
 <script src="goal.js"></script>
+<script src="rules.js"></script>
 </body>
 </html>
