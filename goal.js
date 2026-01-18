@@ -1222,3 +1222,78 @@ DictionaryApp.prototype.renderCurrentSection = function() {
         originalRenderCurrentSection.call(this);
     }
 };
+
+// ===================== GOAL RULES INTEGRATION =====================
+
+DictionaryApp.prototype.updateGoalRulesCard = function() {
+    const listContainer = document.getElementById('goalRulesList');
+    const emptyState = document.getElementById('goalRulesEmpty');
+    const countBadge = document.getElementById('goalRulesCount');
+    
+    if (!listContainer) return;
+    
+    const rules = this.rules || [];
+    const recentRules = rules.slice(0, 5);
+    
+    if (countBadge) {
+        countBadge.textContent = `${rules.length} ${this.pluralize ? this.pluralize(rules.length, 'правило', 'правила', 'правил') : 'правил'}`;
+    }
+    
+    if (rules.length === 0) {
+        listContainer.innerHTML = '';
+        listContainer.style.display = 'none';
+        if (emptyState) emptyState.classList.add('visible');
+        return;
+    }
+    
+    if (emptyState) emptyState.classList.remove('visible');
+    listContainer.style.display = 'flex';
+    
+    listContainer.innerHTML = recentRules.map(rule => {
+        const date = this.formatRuleDate ? this.formatRuleDate(rule.createdAt) : '';
+        const formatIcon = rule.format === 'text' ? 'fa-align-left' : 'fa-table';
+        const formatLabel = rule.format === 'text' ? 'Текст' : 'Таблица';
+        
+        return `
+            <div class="goal-rule-item" data-rule-id="${rule.id}">
+                <div class="goal-rule-item-icon"><i class="fas fa-gavel"></i></div>
+                <div class="goal-rule-item-info">
+                    <div class="goal-rule-item-title">${this.escapeHtml(rule.title)}</div>
+                    <div class="goal-rule-item-meta">
+                        <span class="goal-rule-item-badge"><i class="fas ${formatIcon}"></i> ${formatLabel}</span>
+                        <span>${date}</span>
+                    </div>
+                </div>
+            </div>
+        `;
+    }).join('');
+    
+    listContainer.querySelectorAll('.goal-rule-item').forEach(item => {
+        item.addEventListener('click', () => {
+            const ruleId = item.dataset.ruleId;
+            if (this.openViewRuleModal) this.openViewRuleModal(ruleId);
+        });
+    });
+};
+
+DictionaryApp.prototype.bindGoalRulesEvents = function() {
+    document.getElementById('goalViewAllRules')?.addEventListener('click', () => {
+        this.switchSection('rules');
+    });
+    
+    document.getElementById('goalAddRuleBtn')?.addEventListener('click', () => {
+        if (this.openRuleModal) this.openRuleModal();
+    });
+};
+
+const originalRenderActiveGoal = DictionaryApp.prototype.renderActiveGoal;
+DictionaryApp.prototype.renderActiveGoal = function() {
+    if (originalRenderActiveGoal) originalRenderActiveGoal.call(this);
+    this.updateGoalRulesCard();
+};
+
+const originalBindGoalEvents = DictionaryApp.prototype.bindGoalEvents;
+DictionaryApp.prototype.bindGoalEvents = function() {
+    if (originalBindGoalEvents) originalBindGoalEvents.call(this);
+    this.bindGoalRulesEvents();
+};
