@@ -1223,3 +1223,40 @@ body {
     gap: 10px;
     flex-wrap: wrap;
 }
+
+/* ===== ЗАМЕТКИ ДНЯ - сохранение переносов строк ===== */
+.goal-day-notes-detail {
+    margin-top: 16px;
+    padding-top: 16px;
+    border-top: 1px solid var(--border);
+}
+
+.goal-day-notes-label {
+    font-weight: 600;
+    color: var(--text-secondary);
+    margin-bottom: 8px;
+    font-size: 13px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.goal-day-notes-label i {
+    color: var(--warning);
+}
+
+.goal-day-notes-text {
+    white-space: pre-wrap;       /* Сохраняет переносы строк */
+    word-wrap: break-word;       /* Переносит длинные слова */
+    line-height: 1.6;
+    padding: 12px 14px;
+    background: var(--bg-secondary);
+    border-radius: 8px;
+    border-left: 3px solid var(--primary);
+    font-size: 14px;
+    color: var(--text-primary);
+}
+
+[data-theme="dark"] .goal-day-notes-text {
+    background: var(--bg-tertiary);
+}
