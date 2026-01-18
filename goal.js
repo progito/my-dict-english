@@ -475,7 +475,12 @@ DictionaryApp.prototype.showDayDetails = function(dateStr) {
                         <strong>${dayLog.listening || 0} мин</strong>
                     </div>
                 </div>
-                ${dayLog.notes ? `<div class="goal-day-notes-detail"><i class="fas fa-sticky-note"></i> ${this.escapeHtml(dayLog.notes)}</div>` : ''}
+                ${dayLog.notes ? `
+                    <div class="goal-day-notes-detail">
+                        <div class="goal-day-notes-label"><i class="fas fa-sticky-note"></i> Заметки:</div>
+                        <div class="goal-day-notes-text">${this.escapeHtml(dayLog.notes)}</div>
+                    </div>
+                ` : ''}
             `;
         } else {
             const today = new Date();
