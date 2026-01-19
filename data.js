@@ -111,7 +111,7 @@ In the evening, the rain stops. I put on my jacket and go for a short walk. The 
 
 In the morning I ate breakfast with my family. I drank tea and ate bread with butter. Then I took my backpack and some money. The weather was cool but sunny. I walked to the bus stop near my house. A bus came after five minutes. I paid for a ticket and sat near the window. I looked at the streets and the people.
 
-After ten minutes I got off the bus. The shop was on a big street. There were many cars and many shops. I went inside and saw lots of colorful things. There were pens, markers, paper, and small books. I didn’t know what to choose. Then I saw a nice sketchbook with a blue cover. It looked simple, but it was красивый. I also bought a set of pencils.
+After ten minutes I got off the bus. The shop was on a big street. There were many cars and many shops. I went inside and saw lots of colorful things. There were pens, markers, paper, and small books. I didn’t know what to choose. Then I saw a nice sketchbook with a blue cover. It looked simple, but it was beautiful. I also bought a set of pencils.
 
 When I left the shop, I felt happy. But then I noticed I didn’t know the way back. I felt a little scared. I stopped and looked around. I saw a café and a woman with a dog. I went to her and asked, “Excuse me, where is the bus stop?” My English was not perfect, but she understood me. She smiled and pointed to the next street.
 
