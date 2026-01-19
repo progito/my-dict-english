@@ -10,6 +10,7 @@ class DictionaryApp {
         this.currentSection = 'dictionary';
         this.currentTextId = null;
         this.speakingStartTs = null;
+        this.addingWordFromReading = false; // НОВОЕ: флаг добавления из чтения
         // Audio state
         this.audioCache = {};
         this.currentAudio = null;
@@ -834,7 +835,7 @@ getDailyActivityStats(dateStr) {
         document.getElementById('readingLevelFilter')?.addEventListener('change', () => this.renderTextsGrid());
         document.getElementById('readingAudioFilter')?.addEventListener('change', () => this.renderTextsGrid());
         document.getElementById('readingWordCountFilter')?.addEventListener('change', () => this.renderTextsGrid());
-
+    
         document.getElementById('clearReadingSearch')?.addEventListener('click', () => {
             const searchInput = document.getElementById('readingSearch');
             if (searchInput) {
@@ -842,11 +843,14 @@ getDailyActivityStats(dateStr) {
                 this.renderTextsGrid();
             }
         });
-
+    
         document.getElementById('backToTexts')?.addEventListener('click', () => this.showTextsSetup());
         document.getElementById('markAsRead')?.addEventListener('click', () => this.markTextAsRead());
         document.getElementById('toggleAudioBtn')?.addEventListener('click', () => this.toggleAudio());
         document.getElementById('toggleLoopBtn')?.addEventListener('click', () => this.toggleAudioLoop());
+        
+        // НОВОЕ: Кнопка открытия словаря
+        document.getElementById('openDictionaryBtn')?.addEventListener('click', () => this.openDictionaryFromReading());
     }
 
     // ===== SECTIONS =====
@@ -1243,7 +1247,7 @@ getDailyActivityStats(dateStr) {
                 span.addEventListener('click', (e) => {
                     e.stopPropagation();
                     const word = e.currentTarget.dataset.word;
-                    if (word) this.openWordModal(null, word);
+                    if (word) this.openWordModal(null, word, true); // НОВОЕ: передаём флаг fromReading
                 });
             });
         }
@@ -1280,6 +1284,156 @@ getDailyActivityStats(dateStr) {
         }
 
         this.showToast('Текст отмечен как прочитанный', 'success');
+    }
+
+    openDictionaryFromReading() {
+        // Создаём модальное окно для поиска в словаре
+        this.openDictionarySearchModal();
+    }
+    
+    openDictionarySearchModal() {
+        // Проверяем, существует ли уже модалка
+        let modal = document.getElementById('dictionarySearchModal');
+        
+        if (!modal) {
+            // Создаём модалку динамически
+            modal = document.createElement('div');
+            modal.className = 'modal';
+            modal.id = 'dictionarySearchModal';
+            modal.innerHTML = `
+                <div class="modal-overlay"></div>
+                <div class="modal-content modal-large">
+                    <div class="modal-header">
+                        <h2><i class="fas fa-book"></i> Мой словарь</h2>
+                        <button class="modal-close" id="closeDictionarySearch"><i class="fas fa-times"></i></button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="search-box" style="margin-bottom: 16px;">
+                            <i class="fas fa-search"></i>
+                            <input type="text" id="dictionarySearchInput" placeholder="Поиск слова...">
+                            <button class="clear-search" id="clearDictionarySearch">
+                                <i class="fas fa-times"></i>
+                            </button>
+                        </div>
+                        <div class="dictionary-search-results" id="dictionarySearchResults" style="max-height: 400px; overflow-y: auto;">
+                        </div>
+                        <div class="dictionary-search-empty" id="dictionarySearchEmpty" style="text-align: center; padding: 40px; color: var(--text-muted);">
+                            <i class="fas fa-search" style="font-size: 48px; margin-bottom: 16px;"></i>
+                            <p>Введите слово для поиска</p>
+                        </div>
+                    </div>
+                </div>
+            `;
+            document.body.appendChild(modal);
+            
+            // Привязываем события
+            modal.querySelector('.modal-overlay').addEventListener('click', () => {
+                this.closeModal('dictionarySearchModal');
+            });
+            
+            modal.querySelector('#closeDictionarySearch').addEventListener('click', () => {
+                this.closeModal('dictionarySearchModal');
+            });
+            
+            modal.querySelector('#dictionarySearchInput').addEventListener('input', (e) => {
+                this.filterDictionarySearch(e.target.value);
+            });
+            
+            modal.querySelector('#clearDictionarySearch').addEventListener('click', () => {
+                const input = modal.querySelector('#dictionarySearchInput');
+                if (input) input.value = '';
+                this.filterDictionarySearch('');
+            });
+        }
+        
+        // Очищаем поиск и показываем все слова
+        const input = modal.querySelector('#dictionarySearchInput');
+        if (input) input.value = '';
+        
+        this.filterDictionarySearch('');
+        this.openModal('dictionarySearchModal');
+        
+        setTimeout(() => input?.focus(), 100);
+    }
+    
+    filterDictionarySearch(query) {
+        const resultsContainer = document.getElementById('dictionarySearchResults');
+        const emptyContainer = document.getElementById('dictionarySearchEmpty');
+        
+        if (!resultsContainer) return;
+        
+        const searchQuery = query.toLowerCase().trim();
+        
+        let filtered = this.words;
+        if (searchQuery) {
+            filtered = this.words.filter(w => 
+                w.word.toLowerCase().includes(searchQuery) ||
+                (w.translation && w.translation.toLowerCase().includes(searchQuery))
+            );
+        }
+        
+        if (filtered.length === 0) {
+            resultsContainer.innerHTML = '';
+            if (emptyContainer) {
+                emptyContainer.innerHTML = searchQuery 
+                    ? `<i class="fas fa-search" style="font-size: 48px; margin-bottom: 16px;"></i><p>Слово "${this.escapeHtml(query)}" не найдено</p>`
+                    : `<i class="fas fa-book-open" style="font-size: 48px; margin-bottom: 16px;"></i><p>Словарь пуст</p>`;
+                emptyContainer.style.display = 'block';
+            }
+            return;
+        }
+        
+        if (emptyContainer) emptyContainer.style.display = 'none';
+        
+        // Показываем максимум 50 слов для производительности
+        const toShow = filtered.slice(0, 50);
+        
+        resultsContainer.innerHTML = toShow.map(word => `
+            <div class="dictionary-search-item" data-word-id="${word.id}" style="
+                display: flex;
+                align-items: center;
+                padding: 12px;
+                border-bottom: 1px solid var(--border);
+                cursor: pointer;
+                transition: background 0.2s;
+            ">
+                <div style="flex: 1;">
+                    <div style="font-weight: 600; color: var(--text);">${this.escapeHtml(word.word)}</div>
+                    <div style="font-size: 14px; color: var(--text-muted);">${this.escapeHtml(word.translation || 'Нет перевода')}</div>
+                </div>
+                <span class="status-badge ${word.status === 'learned' ? 'learned' : 'learning'}" style="font-size: 12px;">
+                    ${word.status === 'learned' ? '<i class="fas fa-check"></i>' : '<i class="fas fa-graduation-cap"></i>'}
+                </span>
+                <button class="speak-btn" data-word="${this.escapeHtml(word.word)}" style="margin-left: 8px;" title="Произнести">
+                    <i class="fas fa-volume-up"></i>
+                </button>
+            </div>
+        `).join('');
+        
+        // Добавляем hover эффект и клик
+        resultsContainer.querySelectorAll('.dictionary-search-item').forEach(item => {
+            item.addEventListener('mouseenter', () => {
+                item.style.background = 'var(--bg-secondary)';
+            });
+            item.addEventListener('mouseleave', () => {
+                item.style.background = 'transparent';
+            });
+            
+            // Клик на элемент (кроме кнопки speak)
+            item.addEventListener('click', (e) => {
+                if (e.target.closest('.speak-btn')) return;
+                const wordId = item.dataset.wordId;
+                this.closeModal('dictionarySearchModal');
+                this.openViewModal(wordId);
+            });
+            
+            // Клик на speak
+            item.querySelector('.speak-btn')?.addEventListener('click', (e) => {
+                e.stopPropagation();
+                const word = e.currentTarget.dataset.word;
+                if (word) this.speak(word);
+            });
+        });
     }
 
     // ===== WORDS RENDERING =====
@@ -1418,58 +1572,60 @@ getDailyActivityStats(dateStr) {
     }
 
     // ===== WORD MODAL =====
-    openWordModal(wordId = null, prefilledWord = null) {
+    openWordModal(wordId = null, prefilledWord = null, fromReading = false) {
         this.currentWordId = wordId;
+        this.addingWordFromReading = fromReading; // НОВОЕ: запоминаем источник
+        
         const title = document.getElementById('modalTitle');
         const form = document.getElementById('wordForm');
-
+    
         form?.reset();
         const imagePreview = document.getElementById('imagePreview');
         if (imagePreview) {
             imagePreview.innerHTML = '';
             imagePreview.classList.remove('has-image');
         }
-
+    
         const examplesList = document.getElementById('examplesList');
         if (examplesList) {
             examplesList.innerHTML = this.createExampleItem();
         }
-
+    
         if (wordId) {
             const word = this.words.find(w => w.id === wordId);
             if (!word) return;
-
+    
             if (title) title.innerHTML = '<i class="fas fa-edit"></i> Редактировать слово';
-
+    
             const wordInput = document.getElementById('wordInput');
             const translationInput = document.getElementById('translationInput');
             const imageInput = document.getElementById('imageInput');
             const statusSelect = document.getElementById('statusSelect');
-
+    
             if (wordInput) wordInput.value = word.word;
             if (translationInput) translationInput.value = word.translation || '';
             if (imageInput) imageInput.value = word.image;
             if (statusSelect) statusSelect.value = word.status;
-
+    
             if (imagePreview && word.image) {
                 this.previewImage(word.image, imagePreview);
             }
-
+    
             if (word.examples && word.examples.length > 0 && examplesList) {
                 examplesList.innerHTML = word.examples.map(ex => this.createExampleItem(ex)).join('');
             }
         } else {
             if (title) title.innerHTML = '<i class="fas fa-plus-circle"></i> Добавить слово';
-
+    
             if (prefilledWord) {
                 const wordInput = document.getElementById('wordInput');
                 if (wordInput) wordInput.value = prefilledWord;
                 this.showToast(`Добавление слова: "${prefilledWord}"`, 'info');
             }
         }
-
+    
         this.openModal('wordModal');
-
+    
         if (prefilledWord) {
             setTimeout(() => document.getElementById('translationInput')?.focus(), 100);
         } else {
@@ -1512,17 +1668,29 @@ getDailyActivityStats(dateStr) {
         const translationInput = document.getElementById('translationInput');
         const imageInput = document.getElementById('imageInput');
         const statusSelect = document.getElementById('statusSelect');
-
+    
         const word = wordInput?.value.trim();
         const translation = translationInput?.value.trim();
         const image = imageInput?.value.trim();
         const status = statusSelect?.value || 'learning';
-
+    
         if (!word) {
             this.showToast('Заполните обязательные поля', 'error');
             return;
         }
-
+    
+        // НОВОЕ: Проверка на дубликаты (только при добавлении нового слова)
+        if (!this.currentWordId) {
+            const existingWord = this.words.find(w => 
+                w.word.toLowerCase() === word.toLowerCase()
+            );
+            
+            if (existingWord) {
+                this.showToast(`Слово "${word}" уже есть в словаре!`, 'warning');
+                return;
+            }
+        }
+    
         const examples = Array.from(document.querySelectorAll('.example-item')).map(item => {
             const textInput = item.querySelector('.example-text');
             const imgInput = item.querySelector('.example-image');
@@ -1531,8 +1699,8 @@ getDailyActivityStats(dateStr) {
             if (text) return { text, image: img };
             return null;
         }).filter(ex => ex !== null);
-
-                if (this.currentWordId) {
+    
+        if (this.currentWordId) {
             const wordObj = this.words.find(w => w.id === this.currentWordId);
             if (wordObj) {
                 wordObj.word = word;
@@ -1555,18 +1723,25 @@ getDailyActivityStats(dateStr) {
                 updatedAt: Date.now()
             };
             this.words.unshift(newWord);
-
+    
             // автостатистика: новое слово добавлено сегодня
             this.incrementDailyActivity('newWords', 1);
-
+    
             this.showToast('Слово добавлено', 'success');
         }
-
+    
         this.saveWords();
         this.closeModal('wordModal');
-        this.renderCurrentSection();
+        
+        // НОВОЕ: Если добавляли из чтения - НЕ перерисовываем секцию, остаёмся в тексте
+        if (this.addingWordFromReading) {
+            this.addingWordFromReading = false;
+            // Только обновляем статистику в навигации
+            this.updateAllStats();
+        } else {
+            this.renderCurrentSection();
+        }
     }
-
     // ===== VIEW MODAL =====
     openViewModal(wordId) {
         const word = this.words.find(w => w.id === wordId);
