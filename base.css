@@ -1999,3 +1999,268 @@ body {
 [data-theme="dark"] .view-rule-table tr:hover td {
     background: var(--surface-active);
 }
+/* ===================== GOAL RULES CARD ===================== */
+
+.goal-rules-card {
+    background: var(--surface);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-lg);
+    padding: 20px;
+    margin-top: 24px;
+}
+
+.goal-rules-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 16px;
+    padding-bottom: 12px;
+    border-bottom: 1px solid var(--border-color);
+}
+
+.goal-rules-title {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.goal-rules-title i {
+    font-size: 18px;
+    color: var(--accent-color);
+}
+
+.goal-rules-title h3 {
+    font-size: 16px;
+    font-weight: 600;
+    color: var(--text-primary);
+    margin: 0;
+}
+
+.goal-rules-count {
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--text-muted);
+    background: var(--surface-hover);
+    padding: 4px 12px;
+    border-radius: var(--radius-full);
+}
+
+/* Rules List */
+.goal-rules-list {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    max-height: 300px;
+    overflow-y: auto;
+    padding-right: 8px;
+}
+
+.goal-rules-list::-webkit-scrollbar {
+    width: 6px;
+}
+
+.goal-rules-list::-webkit-scrollbar-track {
+    background: var(--surface-hover);
+    border-radius: 3px;
+}
+
+.goal-rules-list::-webkit-scrollbar-thumb {
+    background: var(--border-hover);
+    border-radius: 3px;
+}
+
+.goal-rules-list::-webkit-scrollbar-thumb:hover {
+    background: var(--text-muted);
+}
+
+/* Rule Item in Goal */
+.goal-rule-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 12px 14px;
+    background: var(--surface-hover);
+    border-radius: var(--radius-md);
+    border: 1px solid transparent;
+    transition: all 0.2s ease;
+    cursor: pointer;
+}
+
+.goal-rule-item:hover {
+    border-color: var(--border-hover);
+    background: var(--surface-active);
+}
+
+.goal-rule-icon {
+    width: 36px;
+    height: 36px;
+    background: var(--accent-light);
+    border-radius: var(--radius-md);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--accent-color);
+    font-size: 14px;
+    flex-shrink: 0;
+}
+
+.goal-rule-icon.text {
+    background: var(--primary-light);
+    color: var(--primary-color);
+}
+
+.goal-rule-icon.table {
+    background: var(--accent-light);
+    color: var(--accent-color);
+}
+
+.goal-rule-info {
+    flex: 1;
+    min-width: 0;
+    overflow: hidden;
+}
+
+.goal-rule-name {
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--text-primary);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    margin-bottom: 2px;
+}
+
+.goal-rule-meta {
+    font-size: 12px;
+    color: var(--text-muted);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.goal-rule-meta span {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+}
+
+.goal-rule-arrow {
+    color: var(--text-muted);
+    font-size: 12px;
+    flex-shrink: 0;
+}
+
+/* Empty State */
+.goal-rules-empty {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 32px 20px;
+    text-align: center;
+    color: var(--text-muted);
+}
+
+.goal-rules-empty i {
+    font-size: 40px;
+    margin-bottom: 12px;
+    color: var(--warning-color);
+    opacity: 0.5;
+}
+
+.goal-rules-empty p {
+    font-size: 14px;
+    margin: 0;
+}
+
+/* Actions */
+.goal-rules-actions {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 12px;
+    margin-top: 16px;
+    padding-top: 16px;
+    border-top: 1px solid var(--border-color);
+}
+
+.goal-rules-actions .btn {
+    flex: 1;
+}
+
+/* ===================== RESPONSIVE ===================== */
+
+@media (max-width: 768px) {
+    .goal-rules-card {
+        padding: 16px;
+    }
+
+    .goal-rules-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 8px;
+    }
+
+    .goal-rules-count {
+        align-self: flex-start;
+    }
+
+    .goal-rules-actions {
+        flex-direction: column;
+    }
+
+    .goal-rules-actions .btn {
+        width: 100%;
+    }
+
+    .goal-rule-item {
+        padding: 10px 12px;
+    }
+
+    .goal-rule-icon {
+        width: 32px;
+        height: 32px;
+        font-size: 12px;
+    }
+
+    .goal-rule-name {
+        font-size: 13px;
+    }
+}
+
+@media (max-width: 480px) {
+    .goal-rules-title h3 {
+        font-size: 14px;
+    }
+
+    .goal-rules-empty {
+        padding: 24px 16px;
+    }
+
+    .goal-rules-empty i {
+        font-size: 32px;
+    }
+
+    .goal-rules-empty p {
+        font-size: 13px;
+    }
+}
+
+/* ===================== DARK THEME ===================== */
+
+[data-theme="dark"] .goal-rules-card {
+    background: var(--surface);
+}
+
+[data-theme="dark"] .goal-rule-item {
+    background: var(--surface-active);
+}
+
+[data-theme="dark"] .goal-rule-item:hover {
+    background: var(--surface-hover);
+    border-color: var(--border-hover);
+}
+
+[data-theme="dark"] .goal-rules-count {
+    background: var(--surface-active);
+}
