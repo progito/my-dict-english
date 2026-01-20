@@ -686,6 +686,7 @@ DictionaryApp.prototype.confirmCloseDay = function() {
     this.closeModal('closeDayModal');
     this.renderActiveGoal();
     this.renderGoalChart();
+    this.updateCloseDayButton();
     this.showToast('День успешно закрыт!', 'success');
 };
 
@@ -1123,6 +1124,8 @@ DictionaryApp.prototype.renderGoalChart = function() {
 
 // Привязка событий для системы целей
 DictionaryApp.prototype.bindGoalEvents = function() {
+    if (this._goalEventsBound) return;
+    this._goalEventsBound = true;
     // Кнопка открытия цели
     document.getElementById('startGoalBtn')?.addEventListener('click', () => this.startGoal());
 
